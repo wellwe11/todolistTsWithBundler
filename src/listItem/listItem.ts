@@ -1,37 +1,11 @@
-type Task = {
+import { tasks } from "../main";
+import handleMoveLiActions from "./functions/handleMoveLiActions";
+
+export type Task = {
   id: string;
   title: string;
   completed: boolean;
   createdAt: Date;
-};
-
-const handleLiActions = (event: MouseEvent) => {
-  const target = event.target as HTMLElement;
-  const action = target.dataset.action;
-  const element = target.closest("li") as HTMLLIElement;
-
-  switch (action) {
-    case "up":
-      const previous = element.previousElementSibling;
-      if (previous) {
-        element.parentNode?.insertBefore(element, previous);
-      }
-      break;
-
-    case "down":
-      const next = element.nextElementSibling;
-      if (next) {
-        element.parentNode?.insertBefore(next, element);
-      }
-      break;
-
-    case "delete":
-      element.remove();
-      break;
-
-    default:
-      return new Error("-- handleLiActions -- No element to perform action on");
-  }
 };
 
 const buttonSet = () => {
@@ -48,9 +22,9 @@ const buttonSet = () => {
   downButton.textContent = "v";
 
   try {
-    deleteButton.addEventListener("click", handleLiActions);
-    upButton.addEventListener("click", handleLiActions);
-    downButton.addEventListener("click", handleLiActions);
+    deleteButton.addEventListener("click", handleMoveLiActions);
+    upButton.addEventListener("click", handleMoveLiActions);
+    downButton.addEventListener("click", handleMoveLiActions);
   } catch (error) {
     let errorMessage = "Error ";
     if (error instanceof Error) {
@@ -66,22 +40,38 @@ const buttonSet = () => {
   };
 };
 
+const newCheckBox = (task: Task) => {
+  const checkbox = document.createElement("input");
+  checkbox.type = "checkbox";
+  checkbox.checked = task.completed;
+
+  const handleChecked = (): void => {
+    const foundArrayElement = tasks.find((e) => e.id === task.id);
+    task.completed = checkbox.checked;
+
+    if (foundArrayElement) {
+      foundArrayElement.completed = checkbox.checked;
+    }
+  };
+
+  checkbox.addEventListener("change", handleChecked);
+
+  return checkbox;
+};
+
 const createLi = (task: Task): HTMLLIElement => {
   const element = document.createElement("li");
-
   const label = document.createElement("label");
-  const checkbox = document.createElement("input");
+  const checkbox = newCheckBox(task);
+
   const { deleteButton, upButton, downButton } = buttonSet();
 
-  checkbox.type = "checkbox";
+  element.id = task.id;
+
   label.append(checkbox, task.title);
   element.append(label, deleteButton, upButton, downButton);
 
   return element;
 };
-
-// create method for completed
-// create method for delete
-// create method for up & down
 
 export default createLi;
