@@ -1,12 +1,6 @@
-import { tasks } from "../main";
+import { findTask } from "../localStorageArray/localStorageArray";
+import type { Task } from "../localStorageArray/localStorageArray";
 import handleMoveLiActions from "./functions/handleMoveLiActions";
-
-export type Task = {
-  id: string;
-  title: string;
-  completed: boolean;
-  createdAt: Date;
-};
 
 const buttonSet = () => {
   const deleteButton = document.createElement("button");
@@ -46,11 +40,11 @@ const newCheckBox = (task: Task) => {
   checkbox.checked = task.completed;
 
   const handleChecked = (): void => {
-    const foundArrayElement = tasks.find((e) => e.id === task.id);
-    task.completed = checkbox.checked;
+    const foundTask = findTask(task);
 
-    if (foundArrayElement) {
-      foundArrayElement.completed = checkbox.checked;
+    if (foundTask) {
+      task.completed = checkbox.checked;
+      foundTask.completed = checkbox.checked;
     }
   };
 

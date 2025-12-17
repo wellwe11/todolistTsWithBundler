@@ -1,5 +1,11 @@
-import { filterTask } from "../../main";
-import { tasks } from "../../main";
+import {
+  filterTask,
+  getTasks,
+  saveTasks,
+} from "../../localStorageArray/localStorageArray";
+import type { Task } from "../../localStorageArray/localStorageArray";
+
+const tasks = getTasks();
 
 const handleRemove = (element: HTMLElement): void => {
   filterTask(element.id);
@@ -15,7 +21,7 @@ const handleMoveOrderUp = (element: HTMLElement): void => {
 };
 
 const handleMoveIndex = (
-  array: any[],
+  array: Task[],
   fromIndex: number,
   toIndex: number
 ): void => {
@@ -40,17 +46,24 @@ const handleMoveLiActions = (event: MouseEvent) => {
 
   switch (action) {
     case "up":
-      handleMoveOrderUp(element);
-      handleMoveIndex(tasks, index, index - 1);
+      if (index > 0) {
+        handleMoveOrderUp(element);
+        handleMoveIndex(tasks, index, index - 1);
+        saveTasks();
+      }
       break;
 
     case "down":
-      handleMoveOrderDown(element);
-      handleMoveIndex(tasks, index, index + 1);
+      if (index < tasks.length - 1) {
+        handleMoveOrderDown(element);
+        handleMoveIndex(tasks, index, index + 1);
+        saveTasks();
+      }
       break;
 
     case "delete":
       handleRemove(element);
+      saveTasks();
       break;
 
     default:
