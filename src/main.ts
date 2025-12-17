@@ -2,16 +2,21 @@ import "./style.css";
 
 import {
   handleAddToArray,
-  saveTasks,
+  notifyChange,
 } from "./localStorageArray/localStorageArray";
 
 const form = document.querySelector<HTMLFormElement>("form");
 
-window.addEventListener("beforeunload", saveTasks);
+// window.addEventListener("beforeunload", saveTasks);
 
 try {
   if (form) {
-    form.addEventListener("submit", handleAddToArray);
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      handleAddToArray(e);
+    });
+    notifyChange();
   }
 } catch (error) {
   let message = "Error ";

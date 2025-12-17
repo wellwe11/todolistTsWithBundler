@@ -1,11 +1,10 @@
-import {
-  filterTask,
-  getTasks,
-  saveTasks,
-} from "../../localStorageArray/localStorageArray";
 import type { Task } from "../../localStorageArray/localStorageArray";
 
-const tasks = getTasks();
+import {
+  filterTask,
+  tasks,
+  saveTasks,
+} from "../../localStorageArray/localStorageArray";
 
 const handleRemove = (element: HTMLElement): void => {
   filterTask(element.id);
@@ -42,6 +41,7 @@ const handleMoveLiActions = (event: MouseEvent) => {
 
   const element = target.closest("li") as HTMLLIElement;
   const id = element.id;
+
   const index = tasks.findIndex((t) => t.id === id);
 
   switch (action) {

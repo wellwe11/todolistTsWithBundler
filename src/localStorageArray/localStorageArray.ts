@@ -1,6 +1,5 @@
 import createLi from "../listItem/listItem";
 import handleInput from "../handleInput/handleInput";
-const ul = document.getElementById("list") as HTMLUListElement;
 
 export type Task = {
   id: string;
@@ -9,25 +8,26 @@ export type Task = {
   createdAt: Date;
 };
 
-const state = createObservableArray(
-  {
-    tasks: loadTasks() as Task[],
-  },
-  () => {
-    saveTasks();
-    refreshUI();
-  }
-);
+export let tasks: Task[] = loadTasks();
 
-function refreshUI() {
+export const notifyChange = () => {
+  saveTasks();
+  refreshUI();
+};
+
+export function refreshUI() {
+  const ul = document.getElementById("list") as HTMLUListElement;
+
   if (!ul) return;
 
   ul.innerHTML = "";
 
-  state.tasks.forEach(sync);
+  tasks.forEach(sync);
 }
 
 function sync(task: Task) {
+  const ul = document.getElementById("list") as HTMLUListElement;
+
   if (!ul) {
     throw new Error("-- handleNewLi -- no appender");
   }
@@ -41,7 +41,6 @@ function sync(task: Task) {
 }
 
 export const handleAddToArray = (e: Event): void => {
-  e.preventDefault();
   const title = handleInput(e);
 
   if (!title) {
@@ -55,23 +54,25 @@ export const handleAddToArray = (e: Event): void => {
     createdAt: new Date(),
   };
 
-  state.tasks = [...state.tasks, liItem];
+  tasks.push(liItem);
+  notifyChange();
 };
 
-export const getTasks = () => state.tasks;
-
 export const filterTask = (id: string) => {
-  state.tasks = state.tasks.filter((t) => t.id !== id);
+  tasks = tasks.filter((t) => t.id !== id);
+  notifyChange();
 };
 
 export const updateTasks = (arr: Task[]) => {
   const hasUpdated =
-    arr.length !== state.tasks.length ||
-    arr.some((value, index) => value !== state.tasks[index]);
+    arr.length !== tasks.length ||
+    arr.some((value, index) => value !== tasks[index]);
 
   if (hasUpdated) {
-    state.tasks = arr;
+    tasks = arr;
   }
+
+  notifyChange();
 };
 
 export function loadTasks(): Task[] {
@@ -83,29 +84,10 @@ export function loadTasks(): Task[] {
 }
 
 export const saveTasks = () => {
-  localStorage.setItem("TASKS", JSON.stringify(state.tasks));
+  localStorage.setItem("TASKS", JSON.stringify(tasks));
 };
 
 export const findTask = (task: Task) => {
-  const foundArrayElement = state.tasks.find((e) => e.id === task.id);
+  const foundArrayElement = tasks.find((e) => e.id === task.id);
   return foundArrayElement;
 };
-
-function createObservableArray<T extends object>(
-  obj: T,
-  onchange: () => void
-): T {
-  return new Proxy(obj, {
-    set(target, property, value) {
-      const success = Reflect.set(target, property, value);
-
-      if (success) {
-        onchange();
-      }
-
-      return true;
-    },
-  }) as T;
-}
-
-// list.addEventListener("change", saveTasks);
