@@ -1,4 +1,4 @@
-import { findTask } from "../localStorageArray/localStorageArray";
+import { toggleCompleted } from "../localStorageArray/localStorageArray";
 import type { Task } from "../localStorageArray/localStorageArray";
 import handleMoveLiActions from "./functions/handleMoveLiActions";
 
@@ -39,16 +39,9 @@ const newCheckBox = (task: Task) => {
   checkbox.type = "checkbox";
   checkbox.checked = task.completed;
 
-  const handleChecked = (): void => {
-    const foundTask = findTask(task);
+  task.completed = checkbox.checked;
 
-    if (foundTask) {
-      task.completed = checkbox.checked;
-      foundTask.completed = checkbox.checked;
-    }
-  };
-
-  checkbox.addEventListener("change", handleChecked);
+  checkbox.addEventListener("change", () => toggleCompleted(task));
 
   return checkbox;
 };

@@ -1,9 +1,6 @@
-import type { Task } from "../../localStorageArray/localStorageArray";
-
 import {
   filterTask,
-  tasks,
-  saveTasks,
+  handleMoveIndex,
 } from "../../localStorageArray/localStorageArray";
 
 const handleRemove = (element: HTMLElement): void => {
@@ -17,15 +14,6 @@ const handleMoveOrderUp = (element: HTMLElement): void => {
   if (previous) {
     element.parentNode?.insertBefore(element, previous);
   }
-};
-
-const handleMoveIndex = (
-  array: Task[],
-  fromIndex: number,
-  toIndex: number
-): void => {
-  const item = array.splice(fromIndex, 1)[0];
-  array.splice(toIndex, 0, item);
 };
 
 const handleMoveOrderDown = (element: HTMLElement): void => {
@@ -42,28 +30,22 @@ const handleMoveLiActions = (event: MouseEvent) => {
   const element = target.closest("li") as HTMLLIElement;
   const id = element.id;
 
-  const index = tasks.findIndex((t) => t.id === id);
-
   switch (action) {
     case "up":
-      if (index > 0) {
-        handleMoveOrderUp(element);
-        handleMoveIndex(tasks, index, index - 1);
-        saveTasks();
-      }
+      handleMoveOrderUp(element);
+      handleMoveIndex(id, "up");
+
       break;
 
     case "down":
-      if (index < tasks.length - 1) {
-        handleMoveOrderDown(element);
-        handleMoveIndex(tasks, index, index + 1);
-        saveTasks();
-      }
+      handleMoveOrderDown(element);
+      handleMoveIndex(id, "down");
+
       break;
 
     case "delete":
       handleRemove(element);
-      saveTasks();
+
       break;
 
     default:
