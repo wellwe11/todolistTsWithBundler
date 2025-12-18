@@ -1,15 +1,18 @@
 import { insertInArr } from "../../localStorageArray/localStorageArray";
 
-export const handleDrag = (element: HTMLElement) => {
-  let originalIndex: number;
+window.addEventListener("dragover", (e) => e.preventDefault());
+window.addEventListener("drop", (e) => e.preventDefault());
 
-  window.addEventListener("dragover", (e) => {
-    e.preventDefault();
-  });
+export const handleDrag = (element: HTMLElement) => {
+  let oldIndex: number;
 
   element.addEventListener("dragstart", (e) => {
+    if (e.dataTransfer) {
+      e.dataTransfer.effectAllowed = "move";
+    }
+
     const index = findIndexOfEl(element);
-    originalIndex = Number(index);
+    oldIndex = Number(index);
 
     setTimeout(() => {
       element.classList.add("dragging");
@@ -21,28 +24,43 @@ export const handleDrag = (element: HTMLElement) => {
     }
   });
 
-  element.addEventListener("dragend", () => {
-    element.classList.remove("dragging");
-
-    const index = Number(findIndexOfEl(element));
-    insertInArr(index, originalIndex);
-  });
-
   element.addEventListener("dragover", (e) => {
     e.preventDefault();
 
+    if (e.dataTransfer) {
+      e.dataTransfer.dropEffect = "move";
+    }
     const draggingEl = document.querySelector(".dragging") as HTMLElement;
-    if (!draggingEl || draggingEl === element) return;
+    const shouldBeBefore = placeElBefore(element, e);
 
-    const rect = element.getBoundingClientRect();
-    const offset = e.clientY - rect.top;
-
-    if (offset > rect.height / 2) {
+    if (shouldBeBefore) {
       element.parentNode?.insertBefore(draggingEl, element.nextSibling);
-    } else if (offset < rect.height / 2) {
+    } else {
       element.parentNode?.insertBefore(draggingEl, element);
     }
   });
+
+  element.addEventListener("dragend", () => {
+    element.classList.remove("dragging");
+
+    const newIndex = Number(findIndexOfEl(element));
+
+    if (newIndex === undefined || newIndex === oldIndex) return;
+
+    insertInArr(newIndex, oldIndex);
+  });
+};
+
+const placeElBefore = (element: HTMLElement, event: DragEvent) => {
+  const rect = element.getBoundingClientRect();
+  const rectHeight = rect.height;
+  const offset = event.clientY - rect.top;
+
+  if (offset > rectHeight / 2) {
+    return true;
+  } else {
+    return false;
+  }
 };
 
 const findIndexOfEl = (el: HTMLElement) => {
@@ -51,6 +69,7 @@ const findIndexOfEl = (el: HTMLElement) => {
 
   const listArray = Array.from(parent.children);
   const index = listArray.indexOf(el);
+
   return index;
 };
 

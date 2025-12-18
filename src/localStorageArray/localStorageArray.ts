@@ -108,11 +108,15 @@ export const handleMoveIndex = (id: string, direction: string): void => {
   notifyChange();
 };
 
-export const insertInArr = (index: number, originalIndex: number) => {
-  const item = tasks.splice(originalIndex, 1)[0];
+export const insertInArr = (newIndex: number, oldIndex: number) => {
+  if (newIndex === oldIndex) return;
 
-  tasks.splice(index, 0, item);
+  const newTasks = [...tasks];
+  const item = newTasks.splice(oldIndex, 1)[0];
 
+  newTasks.splice(newIndex, 0, item);
+
+  tasks = newTasks;
   notifyChange();
 };
 
