@@ -7,8 +7,6 @@ import {
 
 const form = document.querySelector<HTMLFormElement>("form");
 
-// window.addEventListener("beforeunload", saveTasks);
-
 try {
   if (form) {
     form.addEventListener("submit", (e) => {

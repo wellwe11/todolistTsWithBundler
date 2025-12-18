@@ -1,5 +1,6 @@
 import createLi from "../listItem/listItem";
 import handleInput from "../handleInput/handleInput";
+import handleMoveLiActions from "./functions/handleMoveLiActions";
 
 // handleMoveLiActions
 export type Task = {
@@ -7,11 +8,12 @@ export type Task = {
   title: string;
   completed: boolean;
   createdAt: Date;
+  list: Object[];
 };
 
 export let tasks: Task[] = loadTasks();
 
-// here
+// here - tasks
 export const notifyChange = () => {
   saveTasks();
   refreshUI();
@@ -20,6 +22,8 @@ export const notifyChange = () => {
 export function refreshUI() {
   const ul = document.getElementById("list") as HTMLUListElement;
   if (!ul) return;
+
+  ul.addEventListener("click", handleMoveLiActions);
 
   ul.innerHTML = "";
   tasks.forEach(sync);
@@ -108,7 +112,8 @@ export const handleMoveIndex = (id: string, direction: string): void => {
   notifyChange();
 };
 
-export const insertInArr = (newIndex: number, oldIndex: number) => {
+// handleDragACtions - changes index of one object in tasks
+export const syncNewOrder = (newIndex: number, oldIndex: number) => {
   if (newIndex === oldIndex) return;
 
   const newTasks = [...tasks];
@@ -121,7 +126,9 @@ export const insertInArr = (newIndex: number, oldIndex: number) => {
 };
 
 // listItem.ts
-export const toggleCompleted = (task: Task): void => {
-  task.completed = !task.completed;
+export const toggleCompleted = (id: string): void => {
+  const index = tasks.findIndex((t) => t.id === id);
+  tasks[index].completed = !tasks[index].completed;
+
   notifyChange();
 };

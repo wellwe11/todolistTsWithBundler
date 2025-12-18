@@ -1,9 +1,9 @@
-import { insertInArr } from "../../localStorageArray/localStorageArray";
+import { syncNewOrder } from "../../localStorageArray/localStorageArray";
 
 window.addEventListener("dragover", (e) => e.preventDefault());
 window.addEventListener("drop", (e) => e.preventDefault());
 
-export const handleDrag = (element: HTMLElement) => {
+export const handleDrag = (element: HTMLElement): void => {
   let oldIndex: number;
 
   element.addEventListener("dragstart", (e) => {
@@ -47,7 +47,7 @@ export const handleDrag = (element: HTMLElement) => {
 
     if (newIndex === undefined || newIndex === oldIndex) return;
 
-    insertInArr(newIndex, oldIndex);
+    syncNewOrder(newIndex, oldIndex);
   });
 };
 
