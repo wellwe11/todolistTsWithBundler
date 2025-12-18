@@ -1,5 +1,6 @@
 import {
   filterTask,
+  handleAddChild,
   handleMoveIndex,
   toggleCompleted,
 } from "../localStorageArray";
@@ -29,6 +30,11 @@ const handleMoveLiActions = (event: MouseEvent) => {
 
     case "toggle":
       toggleCompleted(id);
+      break;
+
+    case "add":
+      event.preventDefault();
+      handleAddChild(element);
       break;
 
     default:

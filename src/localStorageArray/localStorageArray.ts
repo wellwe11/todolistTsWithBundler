@@ -1,4 +1,4 @@
-import createLi from "../listItem/listItem";
+import createLi, { childLi } from "../listItem/listItem";
 import handleInput from "../handleInput/handleInput";
 import handleMoveLiActions from "./functions/handleMoveLiActions";
 
@@ -9,6 +9,7 @@ export type Task = {
   completed: boolean;
   createdAt: Date;
   list: Object[];
+  dueDate: Date;
 };
 
 export let tasks: Task[] = loadTasks();
@@ -38,6 +39,12 @@ function sync(task: Task) {
   }
 
   const li = createLi(task);
+
+  task.list.forEach((l) => {
+    const child = childLi();
+    li.append(child);
+  });
+
   if (!li) {
     throw new Error("-- handleNewLi -- no li element");
   }
@@ -72,6 +79,8 @@ export const handleAddToArray = (e: Event): void => {
     title: title,
     completed: false,
     createdAt: new Date(),
+    list: [],
+    dueDate: new Date(),
   };
 
   tasks.push(liItem);
@@ -131,4 +140,31 @@ export const toggleCompleted = (id: string): void => {
   tasks[index].completed = !tasks[index].completed;
 
   notifyChange();
+};
+
+export const handleAddChild = (element: HTMLElement) => {
+  const index = tasks.findIndex((t) => t.id === element.id);
+
+  const liItem = {
+    id: crypto.randomUUID(),
+    title: "helklo",
+    completed: false,
+    createdAt: new Date(),
+    dueDate: new Date(),
+  };
+
+  console.log(tasks[index]);
+
+  tasks[index].list.push(liItem);
+
+  notifyChange();
+
+  // find todo (parent)
+  // add naked element
+  // element should have an input
+
+  // childObject:
+  // a check if its done
+  // due date
+  //
 };
