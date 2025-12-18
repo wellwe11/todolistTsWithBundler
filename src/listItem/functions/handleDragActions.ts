@@ -1,6 +1,19 @@
 export const handleDrag = (element: HTMLElement) => {
-  element.addEventListener("dragstart", () => {
-    element.classList.add("dragging");
+  element.addEventListener("dragstart", (e) => {
+    setTimeout(() => {
+      element.classList.add("dragging");
+    }, 0);
+
+    if (e.dataTransfer) {
+      const ghost = element.cloneNode(true) as HTMLElement;
+      ghost.classList.add("draggedGhost");
+
+      document.body.appendChild(ghost);
+
+      e.dataTransfer.setDragImage(ghost, 0, 0);
+
+      setTimeout(() => ghost.remove(), 0);
+    }
   });
 
   element.addEventListener("dragend", () => {
@@ -18,7 +31,7 @@ export const handleDrag = (element: HTMLElement) => {
 
     if (offset > rect.height / 2) {
       element.parentNode?.insertBefore(draggingEl, element.nextSibling);
-    } else {
+    } else if (offset < rect.height / 2) {
       element.parentNode?.insertBefore(draggingEl, element);
     }
   });
