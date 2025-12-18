@@ -8,12 +8,8 @@ export const handleDrag = (element: HTMLElement) => {
   });
 
   element.addEventListener("dragstart", (e) => {
-    const parent = element.parentElement;
-
-    if (!parent) return;
-
-    const listArray = Array.from(parent.children);
-    originalIndex = listArray.indexOf(element);
+    const index = findIndexOfEl(element);
+    originalIndex = Number(index);
 
     setTimeout(() => {
       element.classList.add("dragging");
@@ -25,21 +21,10 @@ export const handleDrag = (element: HTMLElement) => {
     }
   });
 
-  element.addEventListener("drop", (e) => {
-    e.preventDefault();
-  });
-
   element.addEventListener("dragend", () => {
     element.classList.remove("dragging");
 
-    const parent = element.parentElement;
-
-    if (!parent) return;
-
-    const listArray = Array.from(parent.children);
-
-    const index = listArray.indexOf(element);
-
+    const index = Number(findIndexOfEl(element));
     insertInArr(index, originalIndex);
   });
 
@@ -60,6 +45,15 @@ export const handleDrag = (element: HTMLElement) => {
   });
 };
 
+const findIndexOfEl = (el: HTMLElement) => {
+  const parent = el.parentElement;
+  if (!parent) return;
+
+  const listArray = Array.from(parent.children);
+  const index = listArray.indexOf(el);
+  return index;
+};
+
 const ghostEl = (element: HTMLElement): HTMLElement => {
   const ghost = element.cloneNode(true) as HTMLElement;
   ghost.classList.add("draggedGhost");
@@ -69,6 +63,3 @@ const ghostEl = (element: HTMLElement): HTMLElement => {
 
   return ghost;
 };
-
-// next thing to fix
-// fix array-list in localStorageArray.ts so it matches drag and drop
