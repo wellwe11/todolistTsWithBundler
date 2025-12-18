@@ -1,9 +1,20 @@
+import { insertInArr } from "../../localStorageArray/localStorageArray";
+
 export const handleDrag = (element: HTMLElement) => {
+  let originalIndex: number;
+
   window.addEventListener("dragover", (e) => {
     e.preventDefault();
   });
 
   element.addEventListener("dragstart", (e) => {
+    const parent = element.parentElement;
+
+    if (!parent) return;
+
+    const listArray = Array.from(parent.children);
+    originalIndex = listArray.indexOf(element);
+
     setTimeout(() => {
       element.classList.add("dragging");
     }, 0);
@@ -14,12 +25,22 @@ export const handleDrag = (element: HTMLElement) => {
     }
   });
 
-  element.addEventListener("dragend", (e) => {
-    element.classList.remove("dragging");
-  });
-
   element.addEventListener("drop", (e) => {
     e.preventDefault();
+  });
+
+  element.addEventListener("dragend", () => {
+    element.classList.remove("dragging");
+
+    const parent = element.parentElement;
+
+    if (!parent) return;
+
+    const listArray = Array.from(parent.children);
+
+    const index = listArray.indexOf(element);
+
+    insertInArr(index, originalIndex);
   });
 
   element.addEventListener("dragover", (e) => {
@@ -48,3 +69,6 @@ const ghostEl = (element: HTMLElement): HTMLElement => {
 
   return ghost;
 };
+
+// next thing to fix
+// fix array-list in localStorageArray.ts so it matches drag and drop

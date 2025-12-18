@@ -25,11 +25,6 @@ export function refreshUI() {
   tasks.forEach(sync);
 }
 
-// here - notifyChange
-export const saveTasks = () => {
-  localStorage.setItem("TASKS", JSON.stringify(tasks));
-};
-
 // here - refreshUI
 function sync(task: Task) {
   const ul = document.getElementById("list") as HTMLUListElement;
@@ -46,7 +41,12 @@ function sync(task: Task) {
   ul.append(li);
 }
 
-// here
+// here - notifyChange
+export const saveTasks = () => {
+  localStorage.setItem("TASKS", JSON.stringify(tasks));
+};
+
+// here - tasks
 export function loadTasks(): Task[] {
   const taskJSON = localStorage.getItem("TASKS");
 
@@ -105,6 +105,14 @@ export const handleMoveIndex = (id: string, direction: string): void => {
 
   const item = tasks.splice(index, 1)[0];
   tasks.splice(toIndex, 0, item);
+  notifyChange();
+};
+
+export const insertInArr = (index: number, originalIndex: number) => {
+  const item = tasks.splice(originalIndex, 1)[0];
+
+  tasks.splice(index, 0, item);
+
   notifyChange();
 };
 
