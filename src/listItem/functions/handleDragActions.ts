@@ -1,23 +1,25 @@
 export const handleDrag = (element: HTMLElement) => {
+  window.addEventListener("dragover", (e) => {
+    e.preventDefault();
+  });
+
   element.addEventListener("dragstart", (e) => {
     setTimeout(() => {
       element.classList.add("dragging");
     }, 0);
 
     if (e.dataTransfer) {
-      const ghost = element.cloneNode(true) as HTMLElement;
-      ghost.classList.add("draggedGhost");
-
-      document.body.appendChild(ghost);
-
+      const ghost = ghostEl(element);
       e.dataTransfer.setDragImage(ghost, 0, 0);
-
-      setTimeout(() => ghost.remove(), 0);
     }
   });
 
-  element.addEventListener("dragend", () => {
+  element.addEventListener("dragend", (e) => {
     element.classList.remove("dragging");
+  });
+
+  element.addEventListener("drop", (e) => {
+    e.preventDefault();
   });
 
   element.addEventListener("dragover", (e) => {
@@ -35,4 +37,14 @@ export const handleDrag = (element: HTMLElement) => {
       element.parentNode?.insertBefore(draggingEl, element);
     }
   });
+};
+
+const ghostEl = (element: HTMLElement): HTMLElement => {
+  const ghost = element.cloneNode(true) as HTMLElement;
+  ghost.classList.add("draggedGhost");
+  document.body.appendChild(ghost);
+
+  setTimeout(() => ghost.remove(), 0);
+
+  return ghost;
 };
