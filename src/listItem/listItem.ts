@@ -1,5 +1,6 @@
 import { toggleCompleted } from "../localStorageArray/localStorageArray";
 import type { Task } from "../localStorageArray/localStorageArray";
+import { handleDrag } from "./functions/handleDragActions";
 import handleMoveLiActions from "./functions/handleMoveLiActions";
 
 const buttonSet = () => {
@@ -54,9 +55,12 @@ const createLi = (task: Task): HTMLLIElement => {
   const { deleteButton, upButton, downButton } = buttonSet();
 
   element.id = task.id;
+  element.draggable = true;
 
   label.append(checkbox, task.title);
   element.append(label, deleteButton, upButton, downButton);
+
+  handleDrag(element);
 
   return element;
 };

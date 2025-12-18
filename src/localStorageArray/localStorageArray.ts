@@ -87,7 +87,7 @@ export const findTask = (task: Task) => {
 };
 
 // handleMoveLiActions
-export const handleMoveIndex = (id: string, direction: string) => {
+export const handleMoveIndex = (id: string, direction: string): void => {
   if (!id) return;
 
   const index = tasks.findIndex((t) => t.id === id);
