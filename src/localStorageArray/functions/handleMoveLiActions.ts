@@ -34,7 +34,14 @@ const handleMoveLiActions = (event: MouseEvent) => {
 
     case "add":
       event.preventDefault();
-      handleAddChild(element);
+      const input = document.getElementById(
+        "childNameInput"
+      ) as HTMLInputElement;
+      const inputTextContent = input.value;
+
+      if (inputTextContent) {
+        handleAddChild(id, inputTextContent);
+      }
       break;
 
     default:

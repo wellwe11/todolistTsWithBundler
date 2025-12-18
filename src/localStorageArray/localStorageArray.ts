@@ -40,10 +40,12 @@ function sync(task: Task) {
 
   const li = createLi(task);
 
-  task.list.forEach((l) => {
-    const child = childLi();
-    li.append(child);
-  });
+  if (task.list.length > 0) {
+    task.list.forEach((l) => {
+      const child = childLi(l);
+      li.append(child);
+    });
+  }
 
   if (!li) {
     throw new Error("-- handleNewLi -- no li element");
@@ -142,29 +144,18 @@ export const toggleCompleted = (id: string): void => {
   notifyChange();
 };
 
-export const handleAddChild = (element: HTMLElement) => {
-  const index = tasks.findIndex((t) => t.id === element.id);
+export const handleAddChild = (id: string, name: string) => {
+  const index = tasks.findIndex((t) => t.id === id);
 
   const liItem = {
     id: crypto.randomUUID(),
-    title: "helklo",
+    title: name,
     completed: false,
     createdAt: new Date(),
     dueDate: new Date(),
   };
 
-  console.log(tasks[index]);
-
   tasks[index].list.push(liItem);
 
   notifyChange();
-
-  // find todo (parent)
-  // add naked element
-  // element should have an input
-
-  // childObject:
-  // a check if its done
-  // due date
-  //
 };

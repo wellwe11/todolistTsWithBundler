@@ -1,13 +1,21 @@
 import type { Task } from "../localStorageArray/localStorageArray";
 import { handleDrag } from "./functions/handleDragActions";
 
-export const childLi = () => {
+export const childLi = (task: Task) => {
   const element = document.createElement("li");
+
   element.innerHTML = `
+  <input type="checkbox" data-action="toggle" ${
+    task.completed ? "checked" : ""
+  } />
+  <span class="task-text"></span>
   <button data-action="up">UP</button>
   <button data-action="down">DOWN</button>
   <button data-action="delete">DELETE</button>
   `;
+
+  const span = element.querySelector(".task-text") as HTMLSpanElement;
+  span.textContent = task.title;
 
   return element;
 };
@@ -17,11 +25,11 @@ const addChildForm = () => {
   extendedBarContainer.id = "extendedBarForm";
 
   extendedBarContainer.innerHTML = `
-  <label for="nameInput">Name of event</label>
-  <input type="text" id="nameInput" name="nameInput" required />
+  <label for="childNameInput">Name of event</label>
+  <input type="text" id="childNameInput" name="childNameInput" required />
 
-  <label for="dateInput">Due date</label>
-  <input type="date" id="dateInput" name="dateInput" />
+  <label for="childDateInput">Due date</label>
+  <input type="date" id="childDateInput" name="childDateInput" />
   
   <button data-action="add">ADD</button>
   `;
