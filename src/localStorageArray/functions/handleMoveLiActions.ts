@@ -14,7 +14,7 @@ const handleMoveLiActions = (event: MouseEvent) => {
 
   switch (action) {
     case "up":
-      handleMoveIndex(element, "up");
+      handleMoveIndex(id, "up");
 
       break;
 
@@ -24,7 +24,7 @@ const handleMoveLiActions = (event: MouseEvent) => {
       break;
 
     case "delete":
-      filterTask(element.id);
+      filterTask(id);
 
       break;
 

@@ -102,15 +102,8 @@ export const findTask = (task: Task) => {
 };
 
 // handleMoveLiActions
-export const handleMoveIndex = (
-  element: HTMLElement,
-  direction: string
-): void => {
-  if (!element) return;
-
+export const handleMoveIndex = (id: string, direction: string): void => {
   let toIndex: number;
-
-  const id = element.id; // find id
 
   const findTaskArray = (arr: Task[]) => {
     for (const task of arr) {
@@ -129,15 +122,17 @@ export const handleMoveIndex = (
   };
 
   const taskList = findTaskArray(tasks);
+
   if (!taskList || taskList.length < 1) return;
 
   const index = taskList.findIndex((l) => l.id === id);
 
   if (direction === "up") {
     if (index === 0) return;
+    console.log("up");
     toIndex = index - 1;
   } else {
-    if (index === tasks.length - 1) return;
+    if (index === tasks.length) return;
     toIndex = index + 1;
   }
 
