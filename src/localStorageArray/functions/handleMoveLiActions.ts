@@ -14,7 +14,7 @@ const handleMoveLiActions = (event: MouseEvent) => {
 
   switch (action) {
     case "up":
-      handleMoveIndex(id, "up");
+      handleMoveIndex(element, "up");
 
       break;
 

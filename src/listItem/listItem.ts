@@ -1,25 +1,6 @@
 import type { Task } from "../localStorageArray/localStorageArray";
 import { handleDrag } from "./functions/handleDragActions";
 
-export const childLi = (task: Task) => {
-  const element = document.createElement("li");
-
-  element.innerHTML = `
-  <input type="checkbox" data-action="toggle" ${
-    task.completed ? "checked" : ""
-  } />
-  <span class="task-text"></span>
-  <button data-action="up">UP</button>
-  <button data-action="down">DOWN</button>
-  <button data-action="delete">DELETE</button>
-  `;
-
-  const span = element.querySelector(".task-text") as HTMLSpanElement;
-  span.textContent = task.title;
-
-  return element;
-};
-
 const addChildForm = () => {
   const extendedBarContainer = document.createElement("form");
   extendedBarContainer.id = "extendedBarForm";
@@ -41,12 +22,6 @@ const addChildButton = (parent: HTMLElement) => {
   const addButton = document.createElement("button");
   addButton.textContent = "ADD";
 
-  // container with inputs to add new child
-  // name of event
-  // due date
-  // up and down buttons
-  // drag and drop (within container) possibilities
-
   addButton.addEventListener("click", () => {
     parent.appendChild(addChildForm());
   });
@@ -54,37 +29,41 @@ const addChildButton = (parent: HTMLElement) => {
   return addButton;
 };
 
-const innerLiHTML = (task: Task) => {
-  return `
+const addLiInnerHTML = (element: HTMLLIElement) => {
+  element.innerHTML = `
   <input type="checkbox" data-action="toggle" ${
-    task.completed ? "checked" : ""
+    element.classList.contains("completed") ? "checked" : ""
   } />
   <span class="task-text"></span>
-  <button>ADD</button>
   <button data-action="up">UP</button>
   <button data-action="down">DOWN</button>
   <button data-action="delete">DELETE</button>
   `;
 };
 
-const createLi = (task: Task): HTMLLIElement => {
+export const liElement = (task: Task) => {
   const element = document.createElement("li");
 
   element.id = task.id;
   element.draggable = true;
+
   if (task.completed) {
     element.classList.add("completed");
   }
-  handleDrag(element);
 
-  element.innerHTML = innerLiHTML(task);
+  addLiInnerHTML(element);
+  handleDrag(element);
 
   const span = element.querySelector(".task-text") as HTMLSpanElement;
   span.textContent = task.title;
+
+  return element;
+};
+
+export const createTask = (task: Task) => {
+  const element = liElement(task);
 
   element.append(addChildButton(element));
 
   return element;
 };
-
-export default createLi;
