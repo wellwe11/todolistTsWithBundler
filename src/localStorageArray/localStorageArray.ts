@@ -8,7 +8,7 @@ export type Task = {
   title: string;
   completed: boolean;
   createdAt: Date;
-  list: Object[];
+  list: Task[];
   dueDate: Date;
 };
 
@@ -109,40 +109,40 @@ export const handleMoveIndex = (
   if (!element) return;
 
   let toIndex: number;
+
   const id = element.id; // find id
 
-  const findId = (arr: Task[]) => {
-    const scanTasks = (array: Task[]) => {
-      array.forEach((task: Object, index) => {
-        const values = Object.values(task);
+  const findTaskArray = (arr: Task[]) => {
+    for (const task of arr) {
+      if (task.id === id) {
+        return arr;
+      }
 
-        console.log(task);
-        values.forEach((val) => {
-          if (val === id) {
-            if (direction === "up") {
-              if (index === 0) return;
-              toIndex = index - 1;
-            } else {
-              if (index === tasks.length - 1) return;
-              toIndex = index + 1;
-            }
-
-            const item = array.splice(index, 1)[0];
-            array.splice(toIndex, 0, item);
-            console.log(array);
-
-            return task;
-          } else if (Array.isArray(val)) {
-            scanTasks(val);
-          }
-        });
-      });
-    };
-
-    scanTasks(arr);
+      if (task.list) {
+        const found = findTaskArray(task.list);
+        if (found) {
+          return task.list;
+        }
+      }
+    }
+    return null;
   };
 
-  findId(tasks);
+  const taskList = findTaskArray(tasks);
+  if (!taskList || taskList.length < 1) return;
+
+  const index = taskList.findIndex((l) => l.id === id);
+
+  if (direction === "up") {
+    if (index === 0) return;
+    toIndex = index - 1;
+  } else {
+    if (index === tasks.length - 1) return;
+    toIndex = index + 1;
+  }
+
+  const item = taskList.splice(index, 1)[0];
+  taskList.splice(toIndex, 0, item);
 
   notifyChange();
 };
