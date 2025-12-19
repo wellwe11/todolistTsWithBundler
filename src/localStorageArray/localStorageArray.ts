@@ -108,12 +108,6 @@ export const filterTask = (id: string) => {
   notifyChange();
 };
 
-// listItem.ts
-export const findTask = (task: Task) => {
-  const foundArrayElement = tasks.find((e) => e.id === task.id);
-  return foundArrayElement;
-};
-
 // handleMoveLiActions
 export const handleMoveIndex = (id: string, direction: string): void => {
   // find tasks own array
@@ -163,17 +157,26 @@ export const toggleCompleted = (id: string): void => {
 };
 
 export const handleAddChild = (id: string, name: string) => {
-  const index = tasks.findIndex((t) => t.id === id);
+  const localArray = [...tasks];
 
-  const liItem = {
+  const taskList = findTaskArray(localArray, id);
+
+  if (!taskList || taskList.length < 1) return;
+
+  const index = taskList.findIndex((t) => t.id === id);
+
+  const liItem: Task = {
     id: crypto.randomUUID(),
     title: name,
     completed: false,
     createdAt: new Date(),
     dueDate: new Date(),
+    list: [],
   };
 
-  tasks[index].list.push(liItem);
+  taskList[index].list.push(liItem);
+
+  tasks = taskList;
 
   notifyChange();
 };
