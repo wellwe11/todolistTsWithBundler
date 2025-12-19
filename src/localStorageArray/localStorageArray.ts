@@ -33,7 +33,9 @@ export function refreshUI(): void {
 }
 
 // here - refreshUI
-function sync(task: Task): void {
+function sync(task: Task) {
+  if (!task) return;
+
   const ul = document.getElementById("list") as HTMLUListElement;
 
   if (!ul) {
@@ -42,15 +44,15 @@ function sync(task: Task): void {
 
   const li = createTask(task);
 
-  if (task.list.length > 0) {
-    task.list.forEach((l) => {
-      const child = liElement(l as Task);
-      li.append(child);
-    });
-  }
-
   if (!li) {
     throw new Error("-- handleNewLi -- no li element");
+  }
+
+  if (task.list && task.list.length > 0) {
+    task.list.forEach((l) => {
+      const child = liElement(l);
+      li.append(child);
+    });
   }
 
   ul.append(li);
@@ -94,7 +96,6 @@ export const handleAddToArray = (e: Event): void => {
 // handleMoveLiActions
 export const filterTask = (id: string): void => {
   const localArray = [...tasks];
-
   let taskList = findTaskArray(localArray, id);
 
   if (!taskList || taskList.length < 1) return;
@@ -132,15 +133,24 @@ export const handleMoveIndex = (id: string, direction: string): void => {
 };
 
 // handleDragACtions - changes index of one object in tasks
-export const syncNewOrder = (newIndex: number, oldIndex: number): void => {
+export const syncNewOrder = (
+  newIndex: number,
+  oldIndex: number,
+  id: string
+): void => {
   if (newIndex === oldIndex) return;
 
-  const newTasks = [...tasks];
-  const item = newTasks.splice(oldIndex, 1)[0];
+  const localArray = [...tasks];
 
-  newTasks.splice(newIndex, 0, item);
+  const taskList = findTaskArray(localArray, id);
+  if (!taskList || taskList.length < 1) return;
 
-  tasks = newTasks;
+  const item = taskList.splice(oldIndex, 1)[0];
+
+  console.log(taskList, item, oldIndex, newIndex);
+
+  taskList.splice(newIndex, 0, item);
+  tasks = localArray;
   notifyChange();
 };
 

@@ -51,8 +51,8 @@ export const liElement = (task: Task) => {
   }
 
   addLiInnerHTML(element);
-  handleDrag(element);
   element.draggable = true;
+  handleDrag(element);
 
   const span = element.querySelector(".task-text") as HTMLSpanElement;
   span.textContent = task.title;

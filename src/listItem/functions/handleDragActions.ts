@@ -47,23 +47,23 @@ export const handleDrag = (element: HTMLElement): void => {
     element.classList.remove("dragging");
 
     const newIndex = Number(findIndexOfEl(element));
-    if (newIndex === undefined || newIndex === oldIndex) return;
+    if (newIndex === undefined || newIndex === oldIndex || !element) return;
 
-    syncNewOrder(newIndex, oldIndex);
+    syncNewOrder(newIndex, oldIndex, element.id);
   });
 };
 
 const placeElAfter = (element: HTMLElement, event: DragEvent) => {
   const rect = element.getBoundingClientRect();
   const offset = event.clientY - rect.top;
-  return offset > rect.height / 2;
+  return offset > 10;
 };
 
 const findIndexOfEl = (el: HTMLElement) => {
-  const parent = el.parentElement;
+  const parent = el.parentNode;
   if (!parent) return;
 
-  const listArray = Array.from(parent.children);
+  const listArray = Array.from(parent.querySelectorAll(":scope > li"));
   const index = listArray.indexOf(el);
 
   return index;
