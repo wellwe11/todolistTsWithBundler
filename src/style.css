@@ -7,3 +7,9 @@
   background-color: blue;
   width: 200px;
 }
+
+.topContainer {
+  background-color: orange;
+  width: 200px;
+  height: 40px;
+}

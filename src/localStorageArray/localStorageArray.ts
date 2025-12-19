@@ -17,12 +17,12 @@ export type Task = {
 export let tasks: Task[] = loadTasks();
 
 // here - tasks
-export const notifyChange = () => {
+export const notifyChange = (): void => {
   saveTasks();
   refreshUI();
 };
 // here - notifyChange
-export function refreshUI() {
+export function refreshUI(): void {
   const ul = document.getElementById("list") as HTMLUListElement;
   if (!ul) return;
 
@@ -33,7 +33,7 @@ export function refreshUI() {
 }
 
 // here - refreshUI
-function sync(task: Task) {
+function sync(task: Task): void {
   const ul = document.getElementById("list") as HTMLUListElement;
 
   if (!ul) {
@@ -57,7 +57,7 @@ function sync(task: Task) {
 }
 
 // here - notifyChange
-export const saveTasks = () => {
+export const saveTasks = (): void => {
   localStorage.setItem("TASKS", JSON.stringify(tasks));
 };
 
@@ -92,7 +92,7 @@ export const handleAddToArray = (e: Event): void => {
 };
 
 // handleMoveLiActions
-export const filterTask = (id: string) => {
+export const filterTask = (id: string): void => {
   const localArray = [...tasks];
 
   let taskList = findTaskArray(localArray, id);
@@ -132,7 +132,7 @@ export const handleMoveIndex = (id: string, direction: string): void => {
 };
 
 // handleDragACtions - changes index of one object in tasks
-export const syncNewOrder = (newIndex: number, oldIndex: number) => {
+export const syncNewOrder = (newIndex: number, oldIndex: number): void => {
   if (newIndex === oldIndex) return;
 
   const newTasks = [...tasks];
@@ -156,7 +156,7 @@ export const toggleCompleted = (id: string): void => {
   notifyChange();
 };
 
-export const handleAddChild = (id: string, name: string) => {
+export const handleAddChild = (id: string, name: string): void => {
   const localArray = [...tasks];
 
   const taskList = findTaskArray(localArray, id);

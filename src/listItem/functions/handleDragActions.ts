@@ -7,60 +7,56 @@ export const handleDrag = (element: HTMLElement): void => {
   let oldIndex: number;
 
   element.addEventListener("dragstart", (e) => {
+    e.stopPropagation();
+
     if (e.dataTransfer) {
       e.dataTransfer.effectAllowed = "move";
+      const ghost = ghostEl(element);
+      e.dataTransfer.setDragImage(ghost, 0, 0);
     }
 
-    const index = findIndexOfEl(element);
-    oldIndex = Number(index);
+    oldIndex = Number(findIndexOfEl(element));
 
     setTimeout(() => {
       element.classList.add("dragging");
     }, 0);
-
-    if (e.dataTransfer) {
-      const ghost = ghostEl(element);
-      e.dataTransfer.setDragImage(ghost, 0, 0);
-    }
   });
 
   element.addEventListener("dragover", (e) => {
     e.preventDefault();
+    e.stopPropagation();
 
-    if (e.dataTransfer) {
-      e.dataTransfer.dropEffect = "move";
-    }
     const draggingEl = document.querySelector(".dragging") as HTMLElement;
-    const shouldBeBefore = placeElBefore(element, e);
+    if (!draggingEl || draggingEl === element) return;
 
-    if (shouldBeBefore) {
-      element.parentNode?.insertBefore(draggingEl, element.nextSibling);
+    if (draggingEl.parentElement !== element.parentElement) return;
+
+    if (e.dataTransfer) e.dataTransfer.dropEffect = "move";
+
+    const shouldBeAfter = placeElAfter(element, e);
+
+    if (shouldBeAfter) {
+      element.parentNode?.insertBefore(draggingEl, element.nextElementSibling);
     } else {
       element.parentNode?.insertBefore(draggingEl, element);
     }
   });
 
-  element.addEventListener("dragend", () => {
+  element.addEventListener("dragend", (e) => {
+    e.stopPropagation();
     element.classList.remove("dragging");
 
     const newIndex = Number(findIndexOfEl(element));
-
     if (newIndex === undefined || newIndex === oldIndex) return;
 
     syncNewOrder(newIndex, oldIndex);
   });
 };
 
-const placeElBefore = (element: HTMLElement, event: DragEvent) => {
+const placeElAfter = (element: HTMLElement, event: DragEvent) => {
   const rect = element.getBoundingClientRect();
-  const rectHeight = rect.height;
   const offset = event.clientY - rect.top;
-
-  if (offset > rectHeight / 2) {
-    return true;
-  } else {
-    return false;
-  }
+  return offset > rect.height / 2;
 };
 
 const findIndexOfEl = (el: HTMLElement) => {

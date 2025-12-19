@@ -45,7 +45,6 @@ export const liElement = (task: Task) => {
   const element = document.createElement("li");
 
   element.id = task.id;
-  element.draggable = true;
 
   if (task.completed) {
     element.classList.add("completed");
@@ -53,6 +52,7 @@ export const liElement = (task: Task) => {
 
   addLiInnerHTML(element);
   handleDrag(element);
+  element.draggable = true;
 
   const span = element.querySelector(".task-text") as HTMLSpanElement;
   span.textContent = task.title;
