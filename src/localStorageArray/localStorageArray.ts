@@ -1,6 +1,8 @@
 import { createTask, liElement } from "../listItem/listItem";
 import handleInput from "../handleInput/handleInput";
 import handleMoveLiActions from "./functions/handleMoveLiActions";
+import findTaskArray from "./functions/findTaskArray";
+import setToIndex from "./functions/setToIndex";
 
 // handleMoveLiActions
 export type Task = {
@@ -91,7 +93,18 @@ export const handleAddToArray = (e: Event): void => {
 
 // handleMoveLiActions
 export const filterTask = (id: string) => {
-  tasks = tasks.filter((t) => t.id !== id);
+  const localArray = [...tasks];
+
+  let taskList = findTaskArray(localArray, id);
+
+  if (!taskList || taskList.length < 1) return;
+
+  const index = taskList.findIndex((l) => l.id === id);
+
+  taskList.splice(index, 1);
+
+  tasks = localArray;
+
   notifyChange();
 };
 
@@ -103,41 +116,23 @@ export const findTask = (task: Task) => {
 
 // handleMoveLiActions
 export const handleMoveIndex = (id: string, direction: string): void => {
-  let toIndex: number;
-
-  const findTaskArray = (arr: Task[]) => {
-    for (const task of arr) {
-      if (task.id === id) {
-        return arr;
-      }
-
-      if (task.list) {
-        const found = findTaskArray(task.list);
-        if (found) {
-          return task.list;
-        }
-      }
-    }
-    return null;
-  };
-
-  const taskList = findTaskArray(tasks);
+  // find tasks own array
+  let localArray = [...tasks];
+  const taskList = findTaskArray(localArray, id);
 
   if (!taskList || taskList.length < 1) return;
 
+  // defined index
   const index = taskList.findIndex((l) => l.id === id);
 
-  if (direction === "up") {
-    if (index === 0) return;
-    console.log("up");
-    toIndex = index - 1;
-  } else {
-    if (index === tasks.length) return;
-    toIndex = index + 1;
-  }
+  // define new index where object will be placed at
+  const toIndex = setToIndex(direction, index, taskList.length);
+
+  if (toIndex === null) return;
 
   const item = taskList.splice(index, 1)[0];
   taskList.splice(toIndex, 0, item);
+  tasks = localArray;
 
   notifyChange();
 };
@@ -157,8 +152,12 @@ export const syncNewOrder = (newIndex: number, oldIndex: number) => {
 
 // listItem.ts
 export const toggleCompleted = (id: string): void => {
-  const index = tasks.findIndex((t) => t.id === id);
-  tasks[index].completed = !tasks[index].completed;
+  const taskList = findTaskArray(tasks, id);
+
+  if (!taskList || taskList.length < 1) return;
+
+  const index = taskList.findIndex((t) => t.id === id);
+  taskList[index].completed = !taskList[index].completed;
 
   notifyChange();
 };
