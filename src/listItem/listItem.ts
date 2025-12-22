@@ -1,4 +1,4 @@
-import type { Task } from "../localStorageArray/localStorageArray";
+import type { Task, Dates } from "../localStorageArray/localStorageArray";
 import { handleDrag } from "./functions/handleDragActions";
 
 // form which is displayed when user clicks 'add' - inputs for new child displayed
@@ -62,6 +62,18 @@ export const liElement = (task: Task) => {
 
   const span = element.querySelector(".task-text") as HTMLSpanElement;
   span.textContent = task.title + " " + task.dueDate;
+
+  return element;
+};
+
+export const createDate = (date: Dates) => {
+  const element = document.createElement("li");
+  element.innerHTML = `
+  <span class="date-text></span>
+  `;
+  const elementDate = date.date;
+  element.textContent = `${elementDate}`;
+  element.id = date.id;
 
   return element;
 };

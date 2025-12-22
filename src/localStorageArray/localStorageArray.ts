@@ -1,4 +1,4 @@
-import { createTask, liElement } from "../listItem/listItem";
+import { createDate, createTask, liElement } from "../listItem/listItem";
 import handleInput from "../handleInput/handleInput";
 import handleMoveLiActions from "./functions/handleMoveLiActions";
 import findTaskArray from "./functions/findTaskArray";
@@ -12,14 +12,37 @@ export type Task = {
   createdAt: Date;
   list: Task[];
   dueDate: string;
+  time: string | Date;
 };
 
-export let tasks: Task[] = loadTasks();
+export class Dates {
+  createdAt: Date;
+  date: string;
+  tasks: Task[];
+  id: string;
+
+  constructor(createdAt: Date, date: string, tasks: Task[], id: string) {
+    this.createdAt = createdAt;
+    this.date = date;
+    this.tasks = tasks;
+    this.id = id;
+  }
+
+  findTasks(id: string): Task[] | null {
+    return findTaskArray(this.tasks, id) || null;
+  }
+
+  pushTask(task: Task) {
+    return this.tasks.push(task);
+  }
+}
+
+export let tasks: Dates[] = loadTasks();
 
 // here & main.ts - tasks
 export const notifyChange = (): void => {
   saveTasks();
-  console.log(sortByDate());
+  sortByDate();
   refreshUI();
 };
 // here - notifyChange
@@ -34,8 +57,8 @@ function refreshUI(): void {
 }
 
 // here - refreshUI
-function sync(task: Task) {
-  if (!task) return;
+function sync(date: Dates) {
+  if (!date) return;
 
   const ul = document.getElementById("list") as HTMLUListElement;
 
@@ -43,29 +66,39 @@ function sync(task: Task) {
     throw new Error("-- handleNewLi -- no appender");
   }
 
-  const li = createTask(task);
-
-  if (!li) {
-    throw new Error("-- handleNewLi -- no li element");
+  if (date.tasks.length <= 0) {
+    return;
   }
 
-  if (task.list && task.list.length > 0) {
-    task.list.forEach((l) => {
-      const child = liElement(l);
-      li.append(child);
-    });
-  }
+  const liDate = createDate(date);
 
-  ul.append(li);
+  date.tasks.forEach((task: Task) => {
+    const li = createTask(task);
+
+    if (!li) {
+      throw new Error("-- handleNewLi -- no li element");
+    }
+
+    if (date.tasks && task.list.length > 0) {
+      task.list.forEach((l) => {
+        const child = liElement(l);
+        li.append(child);
+      });
+    }
+
+    liDate.append(li);
+  });
+
+  ul.append(liDate);
 }
 
 const sortByDate = () => {
   return tasks.sort((a, b) => {
     const aSplittedDate = Number(
-      a.dueDate.replaceAll("/", "").split(" ").reverse().join()
+      a.date.replaceAll("/", "").split(" ").reverse().join()
     );
     const bSplittedDate = Number(
-      b.dueDate.replaceAll("/", "").split(" ").reverse().join()
+      b.date.replaceAll("/", "").split(" ").reverse().join()
     );
 
     return aSplittedDate - bSplittedDate;
@@ -74,16 +107,16 @@ const sortByDate = () => {
 
 // here - notifyChange
 const saveTasks = (): void => {
-  localStorage.setItem("TASKS", JSON.stringify(tasks));
+  localStorage.setItem("DATES", JSON.stringify(tasks));
 };
 
 // here - tasks
-function loadTasks(): Task[] {
-  const taskJSON = localStorage.getItem("TASKS");
+function loadTasks(): Dates[] {
+  const datesJSON = localStorage.getItem("DATES");
 
-  if (taskJSON === null || taskJSON === undefined) return [];
+  if (datesJSON === null || datesJSON === undefined) return [];
 
-  return JSON.parse(taskJSON);
+  return JSON.parse(datesJSON);
 }
 
 // main.ts
@@ -111,14 +144,35 @@ export const handleAddToArray = (e: Event): void => {
     time: time || new Date(),
   };
 
-  tasks.push(liItem);
+  const foundDate = tasks.find((t) => t.date === `${day}/${month}/${year}`);
+
+  if (foundDate) {
+    foundDate.tasks.push(liItem);
+  } else {
+    const liDate = new Dates(
+      new Date(),
+      `${day}/${month}/${year}`,
+      [],
+      crypto.randomUUID()
+    );
+
+    liDate.tasks.push(liItem);
+
+    tasks.push(liDate);
+  }
+
   notifyChange();
 };
 
 // handleMoveLiActions
-export const filterTask = (id: string): void => {
+export const filterTask = (parentId: string, id: string): void => {
   const localArray = [...tasks];
-  let taskList = findTaskArray(localArray, id);
+
+  const dateList = localArray.find((d) => d.id === parentId);
+
+  if (!dateList) return;
+
+  let taskList = findTaskArray(dateList.tasks, id);
 
   if (!taskList || taskList.length < 1) return;
 
@@ -132,10 +186,18 @@ export const filterTask = (id: string): void => {
 };
 
 // handleMoveLiActions
-export const handleMoveIndex = (id: string, direction: string): void => {
+export const handleMoveIndex = (
+  id: string,
+  parentId: string,
+  direction: string
+): void => {
   // find tasks own array
   let localArray = [...tasks];
-  const taskList = findTaskArray(localArray, id);
+  const dateList = localArray.find((d) => d.id === parentId);
+
+  if (!dateList) return;
+
+  let taskList = findTaskArray(dateList.tasks, id);
 
   if (!taskList || taskList.length < 1) return;
 
@@ -158,13 +220,19 @@ export const handleMoveIndex = (id: string, direction: string): void => {
 export const syncNewOrder = (
   newIndex: number,
   oldIndex: number,
-  id: string
+  id: string,
+  parentId: string
 ): void => {
   if (newIndex === oldIndex) return;
 
   const localArray = [...tasks];
 
-  const taskList = findTaskArray(localArray, id);
+  const dateList = localArray.find((d) => d.id === parentId);
+
+  if (!dateList) return;
+
+  let taskList = findTaskArray(dateList.tasks, id);
+
   if (!taskList || taskList.length < 1) return;
 
   const item = taskList.splice(oldIndex, 1)[0];
@@ -175,8 +243,12 @@ export const syncNewOrder = (
 };
 
 // listItem.ts
-export const toggleCompleted = (id: string): void => {
-  const taskList = findTaskArray(tasks, id);
+export const toggleCompleted = (id: string, parentId: string): void => {
+  const dateList = localArray.find((d) => d.id === parentId);
+
+  if (!dateList) return;
+
+  let taskList = findTaskArray(dateList.tasks, id);
 
   if (!taskList || taskList.length < 1) return;
 
@@ -186,10 +258,18 @@ export const toggleCompleted = (id: string): void => {
   notifyChange();
 };
 
-export const handleAddChild = (id: string, name: string): void => {
+export const handleAddChild = (
+  id: string,
+  parentId: string,
+  name: string
+): void => {
   const localArray = [...tasks];
 
-  const taskList = findTaskArray(localArray, id);
+  const dateList = localArray.find((d) => d.id === parentId);
+
+  if (!dateList) return;
+
+  let taskList = findTaskArray(dateList.tasks, id);
 
   if (!taskList || taskList.length < 1) return;
 
@@ -206,10 +286,14 @@ export const handleAddChild = (id: string, name: string): void => {
 
   taskList[index].list.push(liItem);
 
-  tasks = taskList;
+  tasks = localArray;
 
   notifyChange();
 };
+
+// I think I need to create a new object for each new date inside of the tasks array.
+// Inside each new date which is added, I will allow to add tasks.
+// If same tasks exist on same date, add those inside of the date objct
 
 // create a new file which is for the calendar-list only
 // find all dates for each object and create a specific place for it

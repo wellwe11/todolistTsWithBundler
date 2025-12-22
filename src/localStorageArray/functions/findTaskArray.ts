@@ -13,6 +13,7 @@ const findTaskArray = (arr: Task[], id: string) => {
       }
     }
   }
+
   return null;
 };
 

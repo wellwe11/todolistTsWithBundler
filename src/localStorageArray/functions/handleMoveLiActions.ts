@@ -10,26 +10,28 @@ const handleMoveLiActions = (event: MouseEvent) => {
   const action = target.dataset.action;
 
   const element = target.closest("li") as HTMLLIElement;
+  const parent = element.parentElement;
+  const parentId = parent?.id as string;
   const id = element.id;
 
   switch (action) {
     case "up":
-      handleMoveIndex(id, "up");
+      handleMoveIndex(id, parentId, "up");
 
       break;
 
     case "down":
-      handleMoveIndex(id, "down");
+      handleMoveIndex(id, parentId, "down");
 
       break;
 
     case "delete":
-      filterTask(id);
+      filterTask(parentId, id);
 
       break;
 
     case "toggle":
-      toggleCompleted(id);
+      toggleCompleted(id, parentId);
       break;
 
     case "add":
@@ -40,7 +42,7 @@ const handleMoveLiActions = (event: MouseEvent) => {
       const inputTextContent = input.value;
 
       if (inputTextContent) {
-        handleAddChild(id, inputTextContent);
+        handleAddChild(id, parentId, inputTextContent);
       }
       break;
 
