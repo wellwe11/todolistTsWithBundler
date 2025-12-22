@@ -8,10 +8,20 @@
   </head>
   <body>
     <div id="app">
-      <form action="/submit" method="POST">
-        <label for="formInput">Add to todo</label>
-        <input type="text" id="formInput" name="formInput" required />
-        <button type="submit">+</button>
+      <form action="/submit" method="POST" class="addForm">
+        <label for="formNameInput" class="label">Name</label>
+        <input
+          type="name"
+          id="formNameInput"
+          name="formInput"
+          class="input"
+          required
+        />
+
+        <label>Date</label>
+        <input type="date" id="formDateInput" class="input" />
+
+        <button type="submit" class="submitButton">+</button>
       </form>
 
       <ul id="list"></ul>

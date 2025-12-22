@@ -8,10 +8,8 @@ const addChildForm = () => {
   extendedBarContainer.innerHTML = `
   <label for="childNameInput">Name of event</label>
   <input type="text" id="childNameInput" name="childNameInput" required />
-
   <label for="childDateInput">Due date</label>
   <input type="date" id="childDateInput" name="childDateInput" />
-  
   <button data-action="add">ADD</button>
   `;
 
@@ -19,11 +17,18 @@ const addChildForm = () => {
 };
 
 const addChildButton = (parent: HTMLElement) => {
+  // disables further adding child while another input is active
+  // resets on reload, meaning, once child is added, isActive will again be false
+  let isActive = false;
+
   const addButton = document.createElement("button");
   addButton.textContent = "ADD";
 
   addButton.addEventListener("click", () => {
-    parent.appendChild(addChildForm());
+    if (!isActive) {
+      parent.appendChild(addChildForm());
+    }
+    isActive = true;
   });
 
   return addButton;

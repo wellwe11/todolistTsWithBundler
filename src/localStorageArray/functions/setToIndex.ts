@@ -1,5 +1,4 @@
 const setToIndex = (direction: string, index: number, arrayLength: number) => {
-  console.log();
   let toIndex: number;
   if (direction === "up") {
     if (index === 0) return null;
