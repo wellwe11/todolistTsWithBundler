@@ -11,18 +11,19 @@ export type Task = {
   completed: boolean;
   createdAt: Date;
   list: Task[];
-  dueDate: Date;
+  dueDate: string;
 };
 
 export let tasks: Task[] = loadTasks();
 
-// here - tasks
+// here & main.ts - tasks
 export const notifyChange = (): void => {
   saveTasks();
+  console.log(sortByDate());
   refreshUI();
 };
 // here - notifyChange
-export function refreshUI(): void {
+function refreshUI(): void {
   const ul = document.getElementById("list") as HTMLUListElement;
   if (!ul) return;
 
@@ -58,13 +59,26 @@ function sync(task: Task) {
   ul.append(li);
 }
 
+const sortByDate = () => {
+  return tasks.sort((a, b) => {
+    const aSplittedDate = Number(
+      a.dueDate.replaceAll("/", "").split(" ").reverse().join()
+    );
+    const bSplittedDate = Number(
+      b.dueDate.replaceAll("/", "").split(" ").reverse().join()
+    );
+
+    return aSplittedDate - bSplittedDate;
+  });
+};
+
 // here - notifyChange
-export const saveTasks = (): void => {
+const saveTasks = (): void => {
   localStorage.setItem("TASKS", JSON.stringify(tasks));
 };
 
 // here - tasks
-export function loadTasks(): Task[] {
+function loadTasks(): Task[] {
   const taskJSON = localStorage.getItem("TASKS");
 
   if (taskJSON === null || taskJSON === undefined) return [];
@@ -74,19 +88,27 @@ export function loadTasks(): Task[] {
 
 // main.ts
 export const handleAddToArray = (e: Event): void => {
-  const title = handleInput(e);
+  const { name, date, time } = handleInput(e);
 
-  if (!title) {
+  if (!name) {
     throw new Error("-- handleNewLi -- no input");
   }
 
+  const newDate = date ? new Date(date) : new Date();
+  const [day, month, year] = [
+    newDate.getDate(),
+    newDate.getMonth() + 1,
+    newDate.getFullYear(),
+  ];
+
   const liItem = {
     id: crypto.randomUUID(),
-    title: title,
+    title: name,
     completed: false,
     createdAt: new Date(),
     list: [],
-    dueDate: new Date(),
+    dueDate: `${day}/${month}/${year}`,
+    time: time || new Date(),
   };
 
   tasks.push(liItem);
@@ -147,8 +169,6 @@ export const syncNewOrder = (
 
   const item = taskList.splice(oldIndex, 1)[0];
 
-  console.log(taskList, item, oldIndex, newIndex);
-
   taskList.splice(newIndex, 0, item);
   tasks = localArray;
   notifyChange();
@@ -190,3 +210,8 @@ export const handleAddChild = (id: string, name: string): void => {
 
   notifyChange();
 };
+
+// create a new file which is for the calendar-list only
+// find all dates for each object and create a specific place for it
+// create a row for each calendar-day
+// add those objects to those specific date-rows

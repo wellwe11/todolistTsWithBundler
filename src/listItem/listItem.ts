@@ -1,6 +1,7 @@
 import type { Task } from "../localStorageArray/localStorageArray";
 import { handleDrag } from "./functions/handleDragActions";
 
+// form which is displayed when user clicks 'add' - inputs for new child displayed
 const addChildForm = () => {
   const extendedBarContainer = document.createElement("form");
   extendedBarContainer.id = "extendedBarForm";
@@ -60,13 +61,14 @@ export const liElement = (task: Task) => {
   handleDrag(element);
 
   const span = element.querySelector(".task-text") as HTMLSpanElement;
-  span.textContent = task.title;
+  span.textContent = task.title + " " + task.dueDate;
 
   return element;
 };
 
 export const createTask = (task: Task) => {
   const element = liElement(task);
+  element.draggable = false;
 
   element.append(addChildButton(element));
 

@@ -1,11 +1,14 @@
-const handleInput = (e: Event): string => {
+const handleInput = (e: Event) => {
   const form = e.target as HTMLFormElement;
   const formData = new FormData(form);
 
-  const value = formData.values().next().value as string;
+  const name = formData.get("formInput") as string;
+  const date = formData.get("formDateInput") as string;
+  const time = formData.get("formTimeInput") as string;
+
   form.reset();
 
-  return value;
+  return { name, date, time };
 };
 
 export default handleInput;

@@ -22,3 +22,6 @@ try {
     message += error.message;
   }
 }
+
+// sort form by date
+// for each day (based on date) - a grid should be greated with times, where user can drag and drop item into correct time
