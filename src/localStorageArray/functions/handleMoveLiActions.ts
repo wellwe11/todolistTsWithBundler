@@ -10,7 +10,10 @@ const handleMoveLiActions = (event: MouseEvent) => {
   const action = target.dataset.action;
 
   const element = target.closest("li") as HTMLLIElement;
-  const parent = element.parentElement;
+
+  const parent = element?.parentElement;
+  if (!parent) return;
+
   const parentId = parent?.id as string;
   const id = element.id;
 
