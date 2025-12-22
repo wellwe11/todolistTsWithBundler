@@ -80,7 +80,6 @@ export const createDate = (date: Dates) => {
 
 export const createTask = (task: Task) => {
   const element = liElement(task);
-  element.draggable = false;
 
   element.append(addChildButton(element));
 
