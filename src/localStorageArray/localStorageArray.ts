@@ -4,6 +4,8 @@ import handleMoveLiActions from "./functions/handleMoveLiActions";
 import findTaskArray from "./functions/findTaskArray";
 import setToIndex from "./functions/setToIndex";
 
+import calendar from "../calendar/calendar/calendar";
+
 // handleMoveLiActions
 export type Task = {
   id: string;
@@ -55,13 +57,22 @@ export const notifyChange = (): void => {
 };
 // here - notifyChange
 function refreshUI(): void {
-  const ul = document.getElementById("list") as HTMLUListElement;
-  if (!ul) return;
+  const refreshList = () => {
+    const ul = document.getElementById("list") as HTMLUListElement;
+    if (!ul) return;
 
-  ul.addEventListener("click", handleMoveLiActions);
+    ul.addEventListener("click", handleMoveLiActions);
 
-  ul.innerHTML = "";
-  tasks.forEach(sync);
+    ul.innerHTML = "";
+    tasks.forEach(sync);
+  };
+
+  const refreshCalendar = () => {
+    calendar();
+  };
+
+  refreshList();
+  refreshCalendar();
 }
 
 // here - refreshUI

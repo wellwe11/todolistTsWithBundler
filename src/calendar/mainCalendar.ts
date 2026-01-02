@@ -17,3 +17,7 @@
 // when user clicks on date, expand length of day div.
 // the div should contain a time-list
 // Events should be spread over the date to find matching time, and pin it to them
+
+const mainCalendar = () => {};
+
+export default mainCalendar;
