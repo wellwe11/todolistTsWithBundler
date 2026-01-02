@@ -11,7 +11,7 @@ const handleMoveLiActions = (event: MouseEvent) => {
 
   const element = target.closest("li") as HTMLLIElement;
 
-  const parent = element?.parentElement;
+  const parent = element.closest(".dateLi");
   if (!parent) return;
 
   const parentId = parent?.id as string;
@@ -29,7 +29,7 @@ const handleMoveLiActions = (event: MouseEvent) => {
       break;
 
     case "delete":
-      filterTask(parentId, id);
+      filterTask(id, parentId);
 
       break;
 

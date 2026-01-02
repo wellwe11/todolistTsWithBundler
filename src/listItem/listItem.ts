@@ -74,6 +74,7 @@ export const createDate = (date: Dates) => {
   const elementDate = date.date;
   element.textContent = `${elementDate}`;
   element.id = date.id;
+  element.className = "dateLi";
 
   return element;
 };

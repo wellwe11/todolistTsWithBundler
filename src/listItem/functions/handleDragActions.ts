@@ -45,11 +45,14 @@ export const handleDrag = (element: HTMLElement): void => {
   element.addEventListener("dragend", (e) => {
     e.stopPropagation();
     element.classList.remove("dragging");
+    const parent = element.closest(".dateLi");
+
+    if (!parent) return;
 
     const newIndex = Number(findIndexOfEl(element));
     if (newIndex === undefined || newIndex === oldIndex || !element) return;
 
-    syncNewOrder(newIndex, oldIndex, element.id);
+    syncNewOrder(newIndex, oldIndex, element.id, parent.id);
   });
 };
 
