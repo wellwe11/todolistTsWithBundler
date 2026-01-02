@@ -12,6 +12,16 @@
   padding: 2vw 3vw;
 }
 
+#calendar {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+}
+
+#calendar > .calenderDay {
+  border: 1px solid black;
+  padding: 8px;
+}
+
 .label {
 }
 

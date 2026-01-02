@@ -37,20 +37,59 @@ const date = () => {
 };
 
 const calendarDays = (parent: HTMLElement) => {
-  const { days } = date();
+  const { days, month, year } = date();
 
   for (let d = 0; d < days; d++) {
-    console.log(parent);
-    console.log(1);
-    const newDay = day(`${d + 1}`);
-    console.log(2);
+    const newDay = day(`${d}/${month}/${year}`);
+
     parent.append(newDay);
-    console.log(3);
   }
+};
+
+const year = () => {
+  const yearContainer = document.createElement("div");
+  const minYear = new Date().getFullYear();
+  let activeYear = minYear;
+
+  yearContainer.innerHTML = `
+  <button class="incrementYear">+</button>
+  <h5 class="yearTitle"></h5>
+  <button class="decrementYear">-</button>
+  `;
+
+  const incrementYear = yearContainer.querySelector(
+      ".incrementYear"
+    ) as HTMLButtonElement,
+    decrementYear = yearContainer.querySelector(
+      ".decrementYear"
+    ) as HTMLButtonElement;
+
+  incrementYear?.addEventListener("click", () => {
+    activeYear++;
+
+    yearTitle.textContent = activeYear.toString();
+  });
+
+  decrementYear?.addEventListener("click", () => {
+    activeYear--;
+
+    yearTitle.textContent = activeYear.toString();
+  });
+
+  const yearTitle = yearContainer.querySelector(
+    ".yearTitle"
+  ) as HTMLTitleElement;
+
+  yearTitle.textContent = activeYear.toString();
+
+  return yearContainer;
 };
 
 const calendar = () => {
   const calendar = document.getElementById("calendar") as HTMLElement;
+
+  const yearCont = year();
+  calendar.append(yearCont);
 
   calendarDays(calendar);
 

@@ -7,12 +7,14 @@ const addDayInnerHTML = (element: HTMLElement) => {
 const day = (date: string) => {
   const element = document.createElement("div");
   element.id = date;
+  element.className = "calenderDay";
 
   addDayInnerHTML(element);
 
   const title = element.querySelector(".dayTitle") as HTMLElement;
 
-  title.textContent = date;
+  const day = date.split("/")[0];
+  title.textContent = day;
 
   return element;
 };
