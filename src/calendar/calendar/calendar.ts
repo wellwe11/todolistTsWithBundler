@@ -59,13 +59,16 @@ const calendarDays = (parent: HTMLElement) => {
         `;
 
     const text = element.querySelector(".dayName");
-    text.textContent = day;
+
+    if (text) {
+      text.textContent = day;
+    }
 
     parent.append(element);
   }
 
   for (let d = 0; d < days; d++) {
-    const newDay = day(`${d}/${month}/${year}`);
+    const newDay = day(`${d + 1}/${month}/${year}`);
 
     parent.append(newDay);
   }
