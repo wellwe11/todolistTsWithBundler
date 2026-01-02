@@ -1,4 +1,8 @@
-import type { Task, Dates } from "../localStorageArray/localStorageArray";
+import type {
+  Task,
+  Dates,
+  ChildTask,
+} from "../localStorageArray/localStorageArray";
 import { handleDrag } from "./functions/handleDragActions";
 
 // form which is displayed when user clicks 'add' - inputs for new child displayed
@@ -47,7 +51,7 @@ const addLiInnerHTML = (element: HTMLLIElement) => {
   `;
 };
 
-export const liElement = (task: Task) => {
+export const liElement = (task: Task | ChildTask) => {
   const element = document.createElement("li");
 
   element.id = task.id;
@@ -61,7 +65,7 @@ export const liElement = (task: Task) => {
   handleDrag(element);
 
   const span = element.querySelector(".task-text") as HTMLSpanElement;
-  span.textContent = task.title + " " + task.dueDate;
+  span.textContent = task.title;
 
   return element;
 };

@@ -6,13 +6,17 @@ import type { Task } from "../localStorageArray";
 // A Task can be completed, as well as a childTask.
 // Therefore, we need to skim through both Task's and their respective children, or any other nested array, hence this function.
 
-const findTaskArray = (arr: Task[], id: string) => {
+const isTask = (obj: any, typeCheck: string): obj is Task => {
+  return typeof obj === "object" && obj !== null && typeCheck in obj;
+};
+
+const findTaskArray = (arr: Object[], id: string) => {
   for (const task of arr) {
-    if (task.id === id) {
+    if (isTask(task, "id") && task.id === id) {
       return arr;
     }
 
-    if (task.list) {
+    if (isTask(task, "list") && task.list) {
       const found = findTaskArray(task.list, id);
       if (found) {
         return task.list;

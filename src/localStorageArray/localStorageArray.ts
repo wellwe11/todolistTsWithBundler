@@ -10,17 +10,16 @@ export type Task = {
   title: string;
   completed: boolean;
   createdAt: Date;
-  list: [];
+  list: ChildTask[];
   dueDate: string | Date;
   time: string | Date;
 };
 
-export type childTask = {
+export type ChildTask = {
   id: string;
   title: string;
   completed: boolean;
   createdAt: Date;
-  dueDate: Date;
 };
 
 export class Dates {
@@ -36,8 +35,9 @@ export class Dates {
     this.id = id;
   }
 
-  findTasks(id: string): Task[] | null {
-    return findTaskArray(this.tasks, id) || null;
+  // methods for future
+  findTasks(id: string) {
+    return findTaskArray(this.tasks, id);
   }
 
   pushTask(task: Task) {
@@ -49,8 +49,8 @@ export let tasks: Dates[] = loadTasks();
 
 // here & main.ts - tasks
 export const notifyChange = (): void => {
-  saveTasks();
   sortByDate();
+  saveTasks();
   refreshUI();
 };
 // here - notifyChange
@@ -177,14 +177,10 @@ export const filterTask = (id: string, parentId: string): void => {
   const localArray = [...tasks];
 
   const dateList = localArray.find((d) => d.id === parentId);
-  console.log(localArray, id, parentId);
-
   if (!dateList) return;
 
   let taskList = findTaskArray(dateList.tasks, id);
-
   if (!taskList || taskList.length < 1) return;
-
   const index = taskList.findIndex((l) => l.id === id);
 
   taskList.splice(index, 1);
@@ -237,11 +233,9 @@ export const syncNewOrder = (
   const localArray = [...tasks];
 
   const dateList = localArray.find((d) => d.id === parentId);
-
   if (!dateList) return;
 
   let taskList = findTaskArray(dateList.tasks, id);
-
   if (!taskList || taskList.length < 1) return;
 
   const item = taskList.splice(oldIndex, 1)[0];
@@ -271,13 +265,15 @@ export const toggleCompleted = (id: string, parentId: string): void => {
   notifyChange();
 };
 
-// finds correct date, task and then adds childTask to Task-array
+// finds correct date, task and then adds ChildTask to Task-array
 export const handleAddChild = (
   id: string,
   parentId: string,
   name: string
 ): void => {
   const localArray = [...tasks];
+
+  console.log(localArray);
 
   // finds correct date - this date can have several Tasks associated to it
   const dateList = localArray.find((d) => d.id === parentId);
@@ -288,12 +284,11 @@ export const handleAddChild = (
 
   const task = tasksList.findIndex((t) => t.id === id);
 
-  const liItem: childTask = {
+  const liItem: ChildTask = {
     id: crypto.randomUUID(),
     title: name,
     completed: false,
     createdAt: new Date(),
-    dueDate: new Date(),
   };
 
   tasksList[task].list.push(liItem);
@@ -302,8 +297,3 @@ export const handleAddChild = (
 
   notifyChange();
 };
-
-// create a new file which is for the calendar-list only
-// find all dates for each object and create a specific place for it
-// create a row for each calendar-day
-// add those objects to those specific date-rows
