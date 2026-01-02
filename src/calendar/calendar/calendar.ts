@@ -40,6 +40,30 @@ const date = () => {
 const calendarDays = (parent: HTMLElement) => {
   const { days, month, year } = date();
 
+  const dayNames = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
+  ];
+
+  for (let i = 0; i < dayNames.length; i++) {
+    const day = dayNames[i];
+    const element = document.createElement("div");
+
+    element.innerHTML = `
+        <h5 class="dayName"></h5>
+        `;
+
+    const text = element.querySelector(".dayName");
+    text.textContent = day;
+
+    parent.append(element);
+  }
+
   for (let d = 0; d < days; d++) {
     const newDay = day(`${d}/${month}/${year}`);
 
