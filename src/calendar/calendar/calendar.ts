@@ -32,6 +32,7 @@ const date = () => {
   return {
     year,
     month,
+    months,
     days,
   };
 };
@@ -46,41 +47,58 @@ const calendarDays = (parent: HTMLElement) => {
   }
 };
 
-const year = () => {
+const month = () => {
+  const { months } = date();
   const yearContainer = document.createElement("div");
-  const minYear = new Date().getFullYear();
-  let activeYear = minYear;
+  const currentMonth = new Date();
+  let activeYear = currentMonth.getFullYear();
+  let activeMonth = currentMonth.getMonth();
+  let textMonth = months[activeMonth];
 
   yearContainer.innerHTML = `
-  <button class="incrementYear">+</button>
-  <h5 class="yearTitle"></h5>
-  <button class="decrementYear">-</button>
+  <button class="incrementMonth">+</button>
+  <h5 class="monthTitle"></h5>
+  <button class="decrementMonth">-</button>
   `;
 
   const incrementYear = yearContainer.querySelector(
-      ".incrementYear"
+      ".incrementMonth"
     ) as HTMLButtonElement,
     decrementYear = yearContainer.querySelector(
-      ".decrementYear"
+      ".decrementMonth"
     ) as HTMLButtonElement;
 
-  incrementYear?.addEventListener("click", () => {
-    activeYear++;
+  const monthTitle = yearContainer.querySelector(
+    ".monthTitle"
+  ) as HTMLTitleElement;
 
-    yearTitle.textContent = activeYear.toString();
+  monthTitle.textContent = textMonth;
+
+  incrementYear?.addEventListener("click", () => {
+    if (activeMonth >= 11) {
+      activeYear++;
+      activeMonth = 0;
+    } else {
+      activeMonth++;
+    }
+
+    textMonth = months[activeMonth];
+    monthTitle.textContent = textMonth;
   });
 
   decrementYear?.addEventListener("click", () => {
-    activeYear--;
+    if (activeMonth >= 0) {
+      activeMonth--;
+    } else {
+      activeMonth = 11;
+      activeYear--;
+    }
 
-    yearTitle.textContent = activeYear.toString();
+    textMonth = months[activeMonth];
+    monthTitle.textContent = textMonth;
   });
 
-  const yearTitle = yearContainer.querySelector(
-    ".yearTitle"
-  ) as HTMLTitleElement;
-
-  yearTitle.textContent = activeYear.toString();
+  monthTitle.textContent = textMonth;
 
   return yearContainer;
 };
@@ -88,7 +106,7 @@ const year = () => {
 const calendar = () => {
   const calendar = document.getElementById("calendar") as HTMLElement;
 
-  const yearCont = year();
+  const yearCont = month();
   calendar.append(yearCont);
 
   calendarDays(calendar);
