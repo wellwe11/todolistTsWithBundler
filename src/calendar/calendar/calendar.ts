@@ -72,7 +72,7 @@ const month = () => {
     ".monthTitle"
   ) as HTMLTitleElement;
 
-  monthTitle.textContent = textMonth;
+  monthTitle.textContent = activeYear + " " + textMonth;
 
   incrementYear?.addEventListener("click", () => {
     if (activeMonth >= 11) {
@@ -83,7 +83,7 @@ const month = () => {
     }
 
     textMonth = months[activeMonth];
-    monthTitle.textContent = textMonth;
+    monthTitle.textContent = activeYear + " " + textMonth;
   });
 
   decrementYear?.addEventListener("click", () => {
@@ -95,10 +95,8 @@ const month = () => {
     }
 
     textMonth = months[activeMonth];
-    monthTitle.textContent = textMonth;
+    monthTitle.textContent = activeYear + " " + textMonth;
   });
-
-  monthTitle.textContent = textMonth;
 
   return yearContainer;
 };
