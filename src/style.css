@@ -12,7 +12,7 @@
   padding: 2vw 3vw;
 }
 
-#calendar {
+.daysGrid {
   display: grid;
   grid-template-columns: repeat(8, 1fr);
 }

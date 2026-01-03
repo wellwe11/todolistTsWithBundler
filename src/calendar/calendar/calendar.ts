@@ -1,22 +1,8 @@
-import day from "../calenderDay/calenderDay";
+class CalendarData {
+  private _year!: number;
+  private _monthIndex!: number;
 
-// step 1
-// create a page selector
-// each page will be a month, which is based on a year
-// when a page is selected, a new date for that month is created
-// whenever the page changes, data is re-created, and a new calendar month is made
-
-interface CalendarData {
-  days: number;
-  month: string;
-  months: string[];
-  year: number;
-  monthIndex: number;
-  incrementMonth: Function;
-}
-
-const newDate = (date: Date) => {
-  const months = [
+  readonly months = [
     "January",
     "February",
     "March",
@@ -31,164 +17,110 @@ const newDate = (date: Date) => {
     "December",
   ];
 
-  const year = date.getFullYear();
-  let monthIndex = date.getMonth();
-  const month = months[monthIndex];
-  const days = new Date(year, monthIndex + 1, 0).getDate();
-
-  const incrementMonth = monthIndex++;
-  const decrementMonth = monthIndex--;
-
-  return {
-    year,
-    month,
-    months,
-    days,
-
-    incrementMonth,
-    decrementMonth,
-  };
-};
-
-const currentDate = newDate(new Date());
-
-const weekDayDivs = (parent: HTMLElement) => {
-  const dayNames = [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday",
-  ];
-
-  for (let i = 0; i < dayNames.length; i++) {
-    const day = dayNames[i];
-    const element = document.createElement("div");
-
-    element.innerHTML = `
-        <h5 class="dayName"></h5>
-        `;
-
-    const text = element.querySelector(".dayName");
-
-    if (text) {
-      text.textContent = day;
-    }
-
-    parent.append(element);
+  constructor(date: Date) {
+    this._year = date.getFullYear();
+    this._monthIndex = date.getMonth();
   }
-};
 
-const calendarDaysDivs = (parent: HTMLElement, date: CalendarData) => {
-  const { days, month, year } = date;
-
-  for (let d = 0; d < days; d++) {
-    const newDay = day(`${d + 1}/${month}/${year}`);
-
-    parent.append(newDay);
+  get year() {
+    return this._year;
   }
-};
+  get monthIndex() {
+    return this._monthIndex;
+  }
+  get month() {
+    return this.months[this.monthIndex];
+  }
+  get days() {
+    return new Date(this._year, this.monthIndex + 1, 0).getDate();
+  }
 
-const activeDate = (
-  increment: HTMLButtonElement,
-  decrement: HTMLButtonElement,
-  text: HTMLElement,
-  date: CalendarData
-) => {
-  const { months, incrementMonth } = currentDate;
+  onChange?: () => void;
 
-  // initial year on-load
-  const currentMonth = new Date();
-  let activeYear = currentMonth.getFullYear();
-  let activeMonth = currentMonth.getMonth();
-  let textMonth = months[activeMonth];
-
-  console.log(currentDate);
-
-  increment.addEventListener("click", () => {
-    if (activeMonth >= 11) {
-      incrementMonth();
-      activeYear++;
-      activeMonth = 0;
+  incrementMonth() {
+    if (this._monthIndex >= 11) {
+      this._monthIndex = 0;
+      this._year++;
     } else {
-      activeMonth++;
+      this._monthIndex++;
     }
-  });
+  }
 
-  decrement.addEventListener("click", () => {
-    if (activeMonth >= 0) {
-      activeMonth--;
+  decrementMonth() {
+    if (this._monthIndex <= 0) {
+      this._monthIndex = 11;
+      this._year--;
     } else {
-      activeMonth = 11;
-      activeYear--;
+      this._monthIndex--;
     }
+  }
+}
 
-    textMonth = months[activeMonth];
-    text.textContent = activeYear + " " + textMonth;
-  });
+const currentDate = new CalendarData(new Date());
 
-  return {
-    activeYear,
-    textMonth,
-    activeMonth,
-  };
-};
+const dayNames = [
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday",
+];
 
-const scrollDate = (date: CalendarData) => {
-  const yearContainer = document.createElement("div");
+const calendar = () => {
+  const calendar = document.getElementById("calendar") as HTMLElement;
 
-  yearContainer.innerHTML = `
+  const controller = document.createElement("div");
+  controller.innerHTML = `
   <button class="incrementMonth">+</button>
   <h5 class="monthTitle"></h5>
   <button class="decrementMonth">-</button>
   `;
 
-  const incrementYear = yearContainer.querySelector(
-      ".incrementMonth"
-    ) as HTMLButtonElement,
-    decrementYear = yearContainer.querySelector(
-      ".decrementMonth"
-    ) as HTMLButtonElement;
+  const increment = controller.querySelector(
+    ".incrementMonth"
+  ) as HTMLButtonElement;
+  const decrement = controller.querySelector(
+    ".decrementMonth"
+  ) as HTMLButtonElement;
+  const title = controller.querySelector(".monthTitle") as HTMLElement;
 
-  const monthTitle = yearContainer.querySelector(
-    ".monthTitle"
-  ) as HTMLTitleElement;
+  const weekDays = dayNames.map((name) => {
+    const div = document.createElement("div");
+    div.className = "weekday";
+    div.textContent = name;
+    return div;
+  });
 
-  const { activeYear, textMonth, activeMonth } = activeDate(
-    incrementYear,
-    decrementYear,
-    monthTitle,
-    date
-  );
+  const daysContainer = document.createElement("div");
+  daysContainer.className = "daysGrid";
 
-  monthTitle.textContent = activeYear + " " + textMonth;
+  const updateCalendar = () => {
+    title.textContent = `${currentDate.month} ${currentDate.year}`;
 
-  return {
-    yearContainer,
-    activeYear,
-    activeMonth,
+    daysContainer.innerHTML = "";
+    for (let d = 0; d <= currentDate.days; d++) {
+      const dayEl = document.createElement("div");
+      dayEl.className = "day";
+      dayEl.textContent = String(d);
+      daysContainer.append(dayEl);
+    }
   };
-};
 
-const calendar = () => {
-  const calendar = document.getElementById("calendar") as HTMLElement;
+  updateCalendar();
 
-  const date = new Date();
-  const newD: CalendarData = newDate(date);
-  const { yearContainer, activeMonth, activeYear } = scrollDate(newD);
+  increment.addEventListener("click", () => {
+    currentDate.incrementMonth();
+    updateCalendar();
+  });
 
-  calendar.append(yearContainer);
-  weekDayDivs(calendar);
-  calendarDaysDivs(calendar, newD);
+  decrement.addEventListener("click", () => {
+    currentDate.decrementMonth();
+    updateCalendar();
+  });
 
-  const updateDate = new Date(activeMonth, activeYear);
-
-  console.log(activeMonth, activeYear);
-  console.log(updateDate);
-
-  return calendar;
+  calendar.replaceChildren(controller, ...weekDays, daysContainer);
 };
 
 export default calendar;
