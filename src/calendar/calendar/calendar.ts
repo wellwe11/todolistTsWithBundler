@@ -1,3 +1,13 @@
+const dayNames = [
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday",
+];
+
 class CalendarData {
   private _year!: number;
   private _monthIndex!: number;
@@ -25,17 +35,26 @@ class CalendarData {
   get year() {
     return this._year;
   }
+
   get monthIndex() {
     return this._monthIndex;
   }
+
   get month() {
     return this.months[this.monthIndex];
   }
-  get days() {
+
+  get daysInMonth() {
     return new Date(this._year, this.monthIndex + 1, 0).getDate();
   }
 
-  onChange?: () => void;
+  get firstDayOfMonth() {
+    const date = new Date();
+    const dateIndex = date.getDate();
+    const daysIndex = date.getDay();
+    const firstDayOfMonth = daysIndex - dateIndex;
+    return firstDayOfMonth;
+  }
 
   incrementMonth() {
     if (this._monthIndex >= 11) {
@@ -58,16 +77,6 @@ class CalendarData {
 
 const currentDate = new CalendarData(new Date());
 
-const dayNames = [
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-  "Sunday",
-];
-
 const calendar = () => {
   const calendar = document.getElementById("calendar") as HTMLElement;
 
@@ -88,27 +97,36 @@ const calendar = () => {
 
   const weekDays = dayNames.map((name) => {
     const div = document.createElement("div");
-    div.className = "weekday";
+    div.className = "weekday" + " " + name;
     div.textContent = name;
     return div;
   });
 
-  const daysContainer = document.createElement("div");
-  daysContainer.className = "daysGrid";
+  const weekDayContainer = document.createElement("div");
+  weekDayContainer.className = "daysGrid weekDays";
+
+  weekDayContainer.append(...weekDays);
+
+  const startDaysAt = currentDate.firstDayOfMonth + 1;
+  const monthDaysContainer = document.createElement("div");
+  monthDaysContainer.className = "daysGrid monthDays";
 
   const updateCalendar = () => {
     title.textContent = `${currentDate.month} ${currentDate.year}`;
 
-    daysContainer.innerHTML = "";
-    for (let d = 0; d <= currentDate.days; d++) {
+    monthDaysContainer.innerHTML = "";
+    for (let d = 0; d < currentDate.daysInMonth; d++) {
       const dayEl = document.createElement("div");
       dayEl.className = "day";
-      dayEl.textContent = String(d);
-      daysContainer.append(dayEl);
+      dayEl.textContent = String(d + 1);
+
+      if (d === 0) {
+        dayEl.style.gridColumnStart = String(startDaysAt);
+      }
+
+      monthDaysContainer.append(dayEl);
     }
   };
-
-  updateCalendar();
 
   increment.addEventListener("click", () => {
     currentDate.incrementMonth();
@@ -120,7 +138,8 @@ const calendar = () => {
     updateCalendar();
   });
 
-  calendar.replaceChildren(controller, ...weekDays, daysContainer);
+  calendar.replaceChildren(controller, weekDayContainer, monthDaysContainer);
+  updateCalendar();
 };
 
 export default calendar;

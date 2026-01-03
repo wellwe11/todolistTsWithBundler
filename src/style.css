@@ -14,12 +14,14 @@
 
 .daysGrid {
   display: grid;
-  grid-template-columns: repeat(8, 1fr);
+  grid-template-columns: repeat(7, 1fr);
 }
 
-#calendar > .calenderDay {
+.monthDays {
+}
+
+.daysGrid > .day {
   border: 1px solid black;
-  padding: 8px;
 }
 
 .label {
