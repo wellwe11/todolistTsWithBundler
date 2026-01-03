@@ -6,9 +6,16 @@ import day from "../calenderDay/calenderDay";
 // when a page is selected, a new date for that month is created
 // whenever the page changes, data is re-created, and a new calendar month is made
 
-const date = () => {
-  const date = new Date();
+interface CalendarData {
+  days: number;
+  month: string;
+  months: string[];
+  year: number;
+  monthIndex: number;
+  incrementMonth: Function;
+}
 
+const newDate = (date: Date) => {
   const months = [
     "January",
     "February",
@@ -25,21 +32,27 @@ const date = () => {
   ];
 
   const year = date.getFullYear();
-  const monthIndex = date.getMonth();
+  let monthIndex = date.getMonth();
   const month = months[monthIndex];
   const days = new Date(year, monthIndex + 1, 0).getDate();
+
+  const incrementMonth = monthIndex++;
+  const decrementMonth = monthIndex--;
 
   return {
     year,
     month,
     months,
     days,
+
+    incrementMonth,
+    decrementMonth,
   };
 };
 
-const calendarDays = (parent: HTMLElement) => {
-  const { days, month, year } = date();
+const currentDate = newDate(new Date());
 
+const weekDayDivs = (parent: HTMLElement) => {
   const dayNames = [
     "Monday",
     "Tuesday",
@@ -66,6 +79,10 @@ const calendarDays = (parent: HTMLElement) => {
 
     parent.append(element);
   }
+};
+
+const calendarDaysDivs = (parent: HTMLElement, date: CalendarData) => {
+  const { days, month, year } = date;
 
   for (let d = 0; d < days; d++) {
     const newDay = day(`${d + 1}/${month}/${year}`);
@@ -74,13 +91,53 @@ const calendarDays = (parent: HTMLElement) => {
   }
 };
 
-const month = () => {
-  const { months } = date();
-  const yearContainer = document.createElement("div");
+const activeDate = (
+  increment: HTMLButtonElement,
+  decrement: HTMLButtonElement,
+  text: HTMLElement,
+  date: CalendarData
+) => {
+  const { months, incrementMonth } = currentDate;
+
+  // initial year on-load
   const currentMonth = new Date();
   let activeYear = currentMonth.getFullYear();
   let activeMonth = currentMonth.getMonth();
   let textMonth = months[activeMonth];
+
+  console.log(currentDate);
+
+  increment.addEventListener("click", () => {
+    if (activeMonth >= 11) {
+      incrementMonth();
+      activeYear++;
+      activeMonth = 0;
+    } else {
+      activeMonth++;
+    }
+  });
+
+  decrement.addEventListener("click", () => {
+    if (activeMonth >= 0) {
+      activeMonth--;
+    } else {
+      activeMonth = 11;
+      activeYear--;
+    }
+
+    textMonth = months[activeMonth];
+    text.textContent = activeYear + " " + textMonth;
+  });
+
+  return {
+    activeYear,
+    textMonth,
+    activeMonth,
+  };
+};
+
+const scrollDate = (date: CalendarData) => {
+  const yearContainer = document.createElement("div");
 
   yearContainer.innerHTML = `
   <button class="incrementMonth">+</button>
@@ -99,42 +156,37 @@ const month = () => {
     ".monthTitle"
   ) as HTMLTitleElement;
 
+  const { activeYear, textMonth, activeMonth } = activeDate(
+    incrementYear,
+    decrementYear,
+    monthTitle,
+    date
+  );
+
   monthTitle.textContent = activeYear + " " + textMonth;
 
-  incrementYear?.addEventListener("click", () => {
-    if (activeMonth >= 11) {
-      activeYear++;
-      activeMonth = 0;
-    } else {
-      activeMonth++;
-    }
-
-    textMonth = months[activeMonth];
-    monthTitle.textContent = activeYear + " " + textMonth;
-  });
-
-  decrementYear?.addEventListener("click", () => {
-    if (activeMonth >= 0) {
-      activeMonth--;
-    } else {
-      activeMonth = 11;
-      activeYear--;
-    }
-
-    textMonth = months[activeMonth];
-    monthTitle.textContent = activeYear + " " + textMonth;
-  });
-
-  return yearContainer;
+  return {
+    yearContainer,
+    activeYear,
+    activeMonth,
+  };
 };
 
 const calendar = () => {
   const calendar = document.getElementById("calendar") as HTMLElement;
 
-  const yearCont = month();
-  calendar.append(yearCont);
+  const date = new Date();
+  const newD: CalendarData = newDate(date);
+  const { yearContainer, activeMonth, activeYear } = scrollDate(newD);
 
-  calendarDays(calendar);
+  calendar.append(yearContainer);
+  weekDayDivs(calendar);
+  calendarDaysDivs(calendar, newD);
+
+  const updateDate = new Date(activeMonth, activeYear);
+
+  console.log(activeMonth, activeYear);
+  console.log(updateDate);
 
   return calendar;
 };
