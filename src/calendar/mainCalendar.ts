@@ -1,6 +1,73 @@
 import calendar from "./calendar/calendar";
 import tabController from "./tabController/tabController";
 
+export class CalendarData {
+  private _year!: number;
+  private _monthIndex!: number;
+
+  readonly months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  constructor(date: Date) {
+    this._year = date.getFullYear();
+    this._monthIndex = date.getMonth();
+  }
+
+  get year() {
+    return this._year;
+  }
+
+  get monthIndex() {
+    return this._monthIndex;
+  }
+
+  get month() {
+    return this.months[this.monthIndex];
+  }
+
+  get daysInMonth() {
+    return new Date(this._year, this.monthIndex + 1, 0).getDate();
+  }
+
+  get firstDayOfMonth() {
+    // adapted for euorpean calendar-days
+    const date = new Date(this.year, this.monthIndex, 1).getDay();
+    return date === 0 ? 7 : date;
+  }
+
+  incrementMonth() {
+    if (this._monthIndex >= 11) {
+      this._monthIndex = 0;
+      this._year++;
+    } else {
+      this._monthIndex++;
+    }
+  }
+
+  decrementMonth() {
+    if (this._monthIndex <= 0) {
+      this._monthIndex = 11;
+      this._year--;
+    } else {
+      this._monthIndex--;
+    }
+  }
+}
+
+export const currentDate: CalendarData = new CalendarData(new Date());
+
 // create 3 buttons
 // today, week, month
 
@@ -27,13 +94,20 @@ import tabController from "./tabController/tabController";
 
 const mainCalendar = () => {
   const container = document.getElementById("calendar") as HTMLDivElement;
+  const calendarDays = container.querySelector(
+    "#calendarDays"
+  ) as HTMLDivElement;
+  const controllerContainer = container.querySelector(
+    "#controllerContainer"
+  ) as HTMLDivElement;
+
+  const tabC = tabController();
 
   const { controller, weekDayContainer, monthDaysContainer } = calendar();
-  const listTypeController = tabController();
 
-  container.replaceChildren(controller);
+  controllerContainer.append(controller, weekDayContainer);
 
-  container.replaceChildren(controller, weekDayContainer, monthDaysContainer);
+  calendarDays.replaceChildren(monthDaysContainer);
 
   return container;
 };

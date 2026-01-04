@@ -2,97 +2,7 @@ import { createDate, createTask, liElement } from "../../listItem/listItem";
 import handleMoveLiActions from "../../localStorageArray/functions/handleMoveLiActions";
 import type { Task, Dates } from "../../localStorageArray/localStorageArray";
 import { tasks } from "../../localStorageArray/localStorageArray";
-
-class CalendarData {
-  private _year!: number;
-  private _monthIndex!: number;
-
-  readonly months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-
-  constructor(date: Date) {
-    this._year = date.getFullYear();
-    this._monthIndex = date.getMonth();
-  }
-
-  get year() {
-    return this._year;
-  }
-
-  get monthIndex() {
-    return this._monthIndex;
-  }
-
-  get month() {
-    return this.months[this.monthIndex];
-  }
-
-  get daysInMonth() {
-    return new Date(this._year, this.monthIndex + 1, 0).getDate();
-  }
-
-  get firstDayOfMonth() {
-    // adapted for euorpean calendar-days
-    const date = new Date(this.year, this.monthIndex, 1).getDay();
-    return date === 0 ? 7 : date;
-  }
-
-  incrementMonth() {
-    if (this._monthIndex >= 11) {
-      this._monthIndex = 0;
-      this._year++;
-    } else {
-      this._monthIndex++;
-    }
-  }
-
-  decrementMonth() {
-    if (this._monthIndex <= 0) {
-      this._monthIndex = 11;
-      this._year--;
-    } else {
-      this._monthIndex--;
-    }
-  }
-}
-
-const currentDate = new CalendarData(new Date());
-
-const newController = () => {
-  const controller = document.createElement("div");
-  controller.innerHTML = `
-  <button class="incrementMonth">+</button>
-  <h5 class="monthTitle"></h5>
-  <button class="decrementMonth">-</button>
-  `;
-
-  const increment = controller.querySelector(
-    ".incrementMonth"
-  ) as HTMLButtonElement;
-  const decrement = controller.querySelector(
-    ".decrementMonth"
-  ) as HTMLButtonElement;
-  const title = controller.querySelector(".monthTitle") as HTMLElement;
-
-  return {
-    increment,
-    decrement,
-    title,
-    controller,
-  };
-};
+import { currentDate } from "../mainCalendar";
 
 // static never-changing weekdays: monday, tuesday, wednesday etc.
 const dayNames = [
@@ -163,6 +73,30 @@ const assignDatesToDay = (appender: HTMLElement, obj: Dates) => {
   ul.append(liDate);
 };
 
+export const monthController = () => {
+  const controller = document.createElement("div");
+  controller.innerHTML = `
+  <button class="incrementMonth">+</button>
+  <h5 class="monthTitle"></h5>
+  <button class="decrementMonth">-</button>
+  `;
+
+  const increment = controller.querySelector(
+    ".incrementMonth"
+  ) as HTMLButtonElement;
+  const decrement = controller.querySelector(
+    ".decrementMonth"
+  ) as HTMLButtonElement;
+  const title = controller.querySelector(".monthTitle") as HTMLElement;
+
+  return {
+    increment,
+    decrement,
+    title,
+    controller,
+  };
+};
+
 const calendar = () => {
   const monthDaysContainer = document.createElement("div") as HTMLDivElement;
   monthDaysContainer.className = "daysGrid monthDays";
@@ -170,7 +104,7 @@ const calendar = () => {
   const weekDayContainer = document.createElement("div") as HTMLDivElement;
   weekDayContainer.className = "daysGrid weekDays";
 
-  const { increment, decrement, title, controller } = newController();
+  const { increment, decrement, title, controller } = monthController();
   const weekDays = newWeekDays();
 
   weekDayContainer.append(...weekDays);
@@ -208,6 +142,7 @@ const calendar = () => {
     controller,
     weekDayContainer,
     monthDaysContainer,
+    updateCalendar,
   };
 };
 
