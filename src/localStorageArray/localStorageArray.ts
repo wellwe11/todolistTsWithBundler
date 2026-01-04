@@ -1,10 +1,8 @@
-import { createDate, createTask, liElement } from "../listItem/listItem";
 import handleInput from "../handleInput/handleInput";
-import handleMoveLiActions from "./functions/handleMoveLiActions";
+
 import findTaskArray from "./functions/findTaskArray";
 import setToIndex from "./functions/setToIndex";
 
-import calendar from "../calendar/calendar/calendar";
 import mainCalendar from "../calendar/mainCalendar";
 
 // handleMoveLiActions
@@ -58,55 +56,18 @@ export const notifyChange = (): void => {
 };
 // here - notifyChange
 function refreshUI(): void {
-  const refreshList = () => {
-    const ul = document.getElementById("list") as HTMLUListElement;
-    if (!ul) return;
-
-    ul.addEventListener("click", handleMoveLiActions);
-
-    ul.innerHTML = "";
-    tasks.forEach(sync);
-  };
-
-  refreshList();
-  mainCalendar();
+  tasks.forEach(sync); // sync tasks for each time anything is removed/added
+  mainCalendar(); // update visual calendar
 }
 
 // here - refreshUI
 function sync(date: Dates) {
   if (!date) return;
 
-  const ul = document.getElementById("list") as HTMLUListElement;
-
-  if (!ul) {
-    throw new Error("-- handleNewLi -- no appender");
-  }
-
   if (date.tasks.length <= 0) {
     const filtered = tasks.filter((d) => d.id !== date.id);
     return (tasks = filtered);
   }
-
-  const liDate = createDate(date);
-
-  date.tasks.forEach((task: Task) => {
-    const li = createTask(task);
-
-    if (!li) {
-      throw new Error("-- handleNewLi -- no li element");
-    }
-
-    if (date.tasks && task.list.length > 0) {
-      task.list.forEach((l) => {
-        const child = liElement(l);
-        li.append(child);
-      });
-    }
-
-    liDate.append(li);
-  });
-
-  ul.append(liDate);
 }
 
 const sortByDate = () => {

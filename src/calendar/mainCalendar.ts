@@ -29,6 +29,10 @@ const mainCalendar = () => {
   const container = document.getElementById("calendar") as HTMLDivElement;
 
   const { controller, weekDayContainer, monthDaysContainer } = calendar();
+  const listTypeController = tabController();
+
+  container.replaceChildren(controller);
+
   container.replaceChildren(controller, weekDayContainer, monthDaysContainer);
 
   return container;

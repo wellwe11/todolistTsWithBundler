@@ -164,7 +164,6 @@ const assignDatesToDay = (appender: HTMLElement, obj: Dates) => {
 };
 
 const calendar = () => {
-  console.log(tasks);
   const monthDaysContainer = document.createElement("div") as HTMLDivElement;
   monthDaysContainer.className = "daysGrid monthDays";
 
