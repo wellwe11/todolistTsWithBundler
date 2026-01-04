@@ -1,5 +1,8 @@
 import calendar from "./calendar/calendar";
-import tabController from "./tabController/tabController";
+import tabController, {
+  tab as activeTab,
+  tabActions,
+} from "./tabController/tabController";
 
 export class CalendarData {
   private _year!: number;
@@ -94,6 +97,7 @@ export const currentDate: CalendarData = new CalendarData(new Date());
 
 const mainCalendar = () => {
   const container = document.getElementById("calendar") as HTMLDivElement;
+
   const calendarDays = container.querySelector(
     "#calendarDays"
   ) as HTMLDivElement;
@@ -101,7 +105,7 @@ const mainCalendar = () => {
     "#controllerContainer"
   ) as HTMLDivElement;
 
-  const tabC = tabController();
+  tabController();
 
   const { controller, weekDayContainer, monthDaysContainer } = calendar();
 

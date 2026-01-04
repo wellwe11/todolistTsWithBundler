@@ -81,13 +81,14 @@ export const monthController = () => {
   <button class="decrementMonth">-</button>
   `;
 
+  const title = controller.querySelector(".monthTitle") as HTMLElement;
+
   const increment = controller.querySelector(
     ".incrementMonth"
   ) as HTMLButtonElement;
   const decrement = controller.querySelector(
     ".decrementMonth"
   ) as HTMLButtonElement;
-  const title = controller.querySelector(".monthTitle") as HTMLElement;
 
   return {
     increment,
