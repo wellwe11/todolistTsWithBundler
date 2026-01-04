@@ -1,4 +1,5 @@
-import { createDate } from "../listItem/listItem";
+import { createDate, createTask, liElement } from "../listItem/listItem";
+import type { Task } from "../localStorageArray/localStorageArray";
 
 class CalendarData {
   private _year!: number;
@@ -159,6 +160,25 @@ const calendar = (dates) => {
 
       const liDate = createDate(obj);
       ul.append(liDate);
+
+      console.log(obj);
+
+      obj.tasks.forEach((task: Task) => {
+        const li = createTask(task);
+
+        if (!li) {
+          throw new Error("-- handleNewLi -- no li element");
+        }
+
+        if (obj.tasks && task.list.length > 0) {
+          task.list.forEach((l) => {
+            const child = liElement(l);
+            li.append(child);
+          });
+        }
+
+        liDate.append(li);
+      });
     };
 
     // find matching objects from local storage, that match days in month
