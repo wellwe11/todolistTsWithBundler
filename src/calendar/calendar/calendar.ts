@@ -1,5 +1,7 @@
-import { createDate, createTask, liElement } from "../listItem/listItem";
-import type { Task } from "../localStorageArray/localStorageArray";
+import { createDate, createTask, liElement } from "../../listItem/listItem";
+import handleMoveLiActions from "../../localStorageArray/functions/handleMoveLiActions";
+import type { Task, Dates } from "../../localStorageArray/localStorageArray";
+import { tasks } from "../../localStorageArray/localStorageArray";
 
 class CalendarData {
   private _year!: number;
@@ -131,65 +133,60 @@ const monthDays = () => {
   return monthDays;
 };
 
-const calendar = (dates) => {
-  console.log(dates);
-  const calendar = document.getElementById("calendar") as HTMLElement;
+const assignDatesToDay = (appender: HTMLElement, obj: Dates) => {
+  const ul = document.createElement("list") as HTMLUListElement;
+  ul.addEventListener("click", handleMoveLiActions);
 
-  const weekDayContainer = document.createElement("div");
-  const monthDaysContainer = document.createElement("div");
+  if (appender) {
+    appender.append(ul);
+  }
+
+  const liDate = createDate(obj);
+
+  obj.tasks.forEach((task: Task) => {
+    const li = createTask(task);
+
+    if (!li) {
+      throw new Error("-- handleNewLi -- no li element");
+    }
+
+    if (obj.tasks && task.list.length > 0) {
+      task.list.forEach((l) => {
+        const child = liElement(l);
+        li.append(child);
+      });
+    }
+
+    liDate.append(li);
+  });
+
+  ul.append(liDate);
+};
+
+const calendar = () => {
+  console.log(tasks);
+  const monthDaysContainer = document.createElement("div") as HTMLDivElement;
+  monthDaysContainer.className = "daysGrid monthDays";
+
+  const weekDayContainer = document.createElement("div") as HTMLDivElement;
+  weekDayContainer.className = "daysGrid weekDays";
 
   const { increment, decrement, title, controller } = newController();
   const weekDays = newWeekDays();
 
-  weekDayContainer.className = "daysGrid weekDays";
-
   weekDayContainer.append(...weekDays);
-
-  monthDaysContainer.className = "daysGrid monthDays";
 
   const updateCalendar = () => {
     title.textContent = `${currentDate.month} ${currentDate.year}`;
-
     monthDaysContainer.innerHTML = "";
 
     const mDays = monthDays();
-
-    const assignDatesToDay = (element, obj) => {
-      const ul = document.createElement("list") as HTMLUListElement;
-      element.append(ul);
-
-      const liDate = createDate(obj);
-      ul.append(liDate);
-
-      console.log(obj);
-
-      obj.tasks.forEach((task: Task) => {
-        const li = createTask(task);
-
-        if (!li) {
-          throw new Error("-- handleNewLi -- no li element");
-        }
-
-        if (obj.tasks && task.list.length > 0) {
-          task.list.forEach((l) => {
-            const child = liElement(l);
-            li.append(child);
-          });
-        }
-
-        liDate.append(li);
-      });
-    };
-
     // find matching objects from local storage, that match days in month
-    dates.forEach((dateObj) => {
+    tasks.forEach((dateObj) => {
       const dayDate = dateObj.date;
-
       mDays.forEach((date) => {
         if (date.dataset.action === dayDate) {
-          console.log(dateObj, date);
           assignDatesToDay(date, dateObj);
-        } else {
         }
       });
     });
@@ -207,8 +204,12 @@ const calendar = (dates) => {
     updateCalendar();
   });
 
-  calendar.replaceChildren(controller, weekDayContainer, monthDaysContainer);
   updateCalendar();
+  return {
+    controller,
+    weekDayContainer,
+    monthDaysContainer,
+  };
 };
 
 export default calendar;

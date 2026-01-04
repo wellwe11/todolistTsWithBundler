@@ -4,7 +4,8 @@ import handleMoveLiActions from "./functions/handleMoveLiActions";
 import findTaskArray from "./functions/findTaskArray";
 import setToIndex from "./functions/setToIndex";
 
-import calendar from "../calendar/calendar";
+import calendar from "../calendar/calendar/calendar";
+import mainCalendar from "../calendar/mainCalendar";
 
 // handleMoveLiActions
 export type Task = {
@@ -64,15 +65,11 @@ function refreshUI(): void {
     ul.addEventListener("click", handleMoveLiActions);
 
     ul.innerHTML = "";
-    // tasks.forEach(sync);
-  };
-
-  const refreshCalendar = () => {
-    calendar(tasks);
+    tasks.forEach(sync);
   };
 
   refreshList();
-  refreshCalendar();
+  mainCalendar();
 }
 
 // here - refreshUI
@@ -86,7 +83,8 @@ function sync(date: Dates) {
   }
 
   if (date.tasks.length <= 0) {
-    return;
+    const filtered = tasks.filter((d) => d.id !== date.id);
+    return (tasks = filtered);
   }
 
   const liDate = createDate(date);
@@ -283,8 +281,6 @@ export const handleAddChild = (
   name: string
 ): void => {
   const localArray = [...tasks];
-
-  console.log(localArray);
 
   // finds correct date - this date can have several Tasks associated to it
   const dateList = localArray.find((d) => d.id === parentId);
