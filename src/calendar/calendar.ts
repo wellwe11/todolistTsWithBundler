@@ -1,13 +1,3 @@
-const dayNames = [
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-  "Sunday",
-];
-
 class CalendarData {
   private _year!: number;
   private _monthIndex!: number;
@@ -49,11 +39,8 @@ class CalendarData {
   }
 
   get firstDayOfMonth() {
-    const date = new Date();
-    const dateIndex = date.getDate();
-    const daysIndex = date.getDay();
-    const firstDayOfMonth = daysIndex - dateIndex;
-    return firstDayOfMonth;
+    const date = new Date(this.year, this.monthIndex, 1).getDay();
+    return date === 0 ? 7 : date;
   }
 
   incrementMonth() {
@@ -77,9 +64,7 @@ class CalendarData {
 
 const currentDate = new CalendarData(new Date());
 
-const calendar = () => {
-  const calendar = document.getElementById("calendar") as HTMLElement;
-
+const newController = () => {
   const controller = document.createElement("div");
   controller.innerHTML = `
   <button class="incrementMonth">+</button>
@@ -95,23 +80,49 @@ const calendar = () => {
   ) as HTMLButtonElement;
   const title = controller.querySelector(".monthTitle") as HTMLElement;
 
-  const weekDays = dayNames.map((name) => {
+  return {
+    increment,
+    decrement,
+    title,
+    controller,
+  };
+};
+
+// static never-changing weekdays: monday, tuesday, wednesday etc.
+const dayNames = [
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday",
+];
+const newWeekDays = () =>
+  dayNames.map((name) => {
     const div = document.createElement("div");
     div.className = "weekday" + " " + name;
     div.textContent = name;
     return div;
   });
 
+const calendar = () => {
+  const calendar = document.getElementById("calendar") as HTMLElement;
+
   const weekDayContainer = document.createElement("div");
+  const monthDaysContainer = document.createElement("div");
+
+  const { increment, decrement, title, controller } = newController();
+  const weekDays = newWeekDays();
+
   weekDayContainer.className = "daysGrid weekDays";
 
   weekDayContainer.append(...weekDays);
 
-  const startDaysAt = currentDate.firstDayOfMonth + 1;
-  const monthDaysContainer = document.createElement("div");
   monthDaysContainer.className = "daysGrid monthDays";
 
   const updateCalendar = () => {
+    const startDaysAt = currentDate.firstDayOfMonth;
     title.textContent = `${currentDate.month} ${currentDate.year}`;
 
     monthDaysContainer.innerHTML = "";

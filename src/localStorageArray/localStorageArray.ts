@@ -4,7 +4,7 @@ import handleMoveLiActions from "./functions/handleMoveLiActions";
 import findTaskArray from "./functions/findTaskArray";
 import setToIndex from "./functions/setToIndex";
 
-import calendar from "../calendar/calendar/calendar";
+import calendar from "../calendar/calendar";
 
 // handleMoveLiActions
 export type Task = {

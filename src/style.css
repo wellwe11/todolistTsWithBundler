@@ -15,12 +15,20 @@
 .daysGrid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
+  gap: clamp(10px, 5vw, 50px);
+}
+
+.weekDays {
+  background-color: white;
+  padding-bottom: 16px;
 }
 
 .monthDays {
+  background-color: white;
 }
 
 .daysGrid > .day {
+  padding: 16px 8px;
   border: 1px solid black;
 }
 
