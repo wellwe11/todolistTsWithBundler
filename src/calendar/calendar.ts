@@ -39,6 +39,7 @@ class CalendarData {
   }
 
   get firstDayOfMonth() {
+    // adapted for euorpean calendar-days
     const date = new Date(this.year, this.monthIndex, 1).getDay();
     return date === 0 ? 7 : date;
   }
@@ -128,6 +129,9 @@ const calendar = () => {
     monthDaysContainer.innerHTML = "";
     for (let d = 0; d < currentDate.daysInMonth; d++) {
       const dayEl = document.createElement("div");
+      dayEl.dataset.action = `${d + 1}/${currentDate.monthIndex}/${
+        currentDate.year
+      }`;
       dayEl.className = "day";
       dayEl.textContent = String(d + 1);
 
