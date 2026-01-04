@@ -1,3 +1,5 @@
+import { createDate } from "../listItem/listItem";
+
 class CalendarData {
   private _year!: number;
   private _monthIndex!: number;
@@ -107,7 +109,29 @@ const newWeekDays = () =>
     return div;
   });
 
-const calendar = () => {
+const monthDays = () => {
+  const monthDays = [];
+
+  for (let d = 0; d < currentDate.daysInMonth; d++) {
+    const dayEl = document.createElement("div");
+    dayEl.dataset.action = `${d + 1}/${currentDate.monthIndex}/${
+      currentDate.year
+    }`;
+    dayEl.className = "day";
+    dayEl.textContent = String(d + 1);
+
+    if (d === 0) {
+      dayEl.style.gridColumnStart = String(currentDate.firstDayOfMonth);
+    }
+
+    monthDays.push(dayEl);
+  }
+
+  return monthDays;
+};
+
+const calendar = (dates) => {
+  console.log(dates);
   const calendar = document.getElementById("calendar") as HTMLElement;
 
   const weekDayContainer = document.createElement("div");
@@ -123,24 +147,34 @@ const calendar = () => {
   monthDaysContainer.className = "daysGrid monthDays";
 
   const updateCalendar = () => {
-    const startDaysAt = currentDate.firstDayOfMonth;
     title.textContent = `${currentDate.month} ${currentDate.year}`;
 
     monthDaysContainer.innerHTML = "";
-    for (let d = 0; d < currentDate.daysInMonth; d++) {
-      const dayEl = document.createElement("div");
-      dayEl.dataset.action = `${d + 1}/${currentDate.monthIndex}/${
-        currentDate.year
-      }`;
-      dayEl.className = "day";
-      dayEl.textContent = String(d + 1);
 
-      if (d === 0) {
-        dayEl.style.gridColumnStart = String(startDaysAt);
-      }
+    const mDays = monthDays();
 
-      monthDaysContainer.append(dayEl);
-    }
+    const assignDatesToDay = (element, obj) => {
+      const ul = document.createElement("list") as HTMLUListElement;
+      element.append(ul);
+
+      const liDate = createDate(obj);
+      ul.append(liDate);
+    };
+
+    // find matching objects from local storage, that match days in month
+    dates.forEach((dateObj) => {
+      const dayDate = dateObj.date;
+
+      mDays.forEach((date) => {
+        if (date.dataset.action === dayDate) {
+          console.log(dateObj, date);
+          assignDatesToDay(date, dateObj);
+        } else {
+        }
+      });
+    });
+
+    monthDaysContainer.append(...mDays);
   };
 
   increment.addEventListener("click", () => {

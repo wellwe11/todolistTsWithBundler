@@ -64,11 +64,11 @@ function refreshUI(): void {
     ul.addEventListener("click", handleMoveLiActions);
 
     ul.innerHTML = "";
-    tasks.forEach(sync);
+    // tasks.forEach(sync);
   };
 
   const refreshCalendar = () => {
-    calendar();
+    calendar(tasks);
   };
 
   refreshList();
@@ -149,7 +149,7 @@ export const handleAddToArray = (e: Event): void => {
   const newDate = date ? new Date(date) : new Date();
   const [day, month, year] = [
     newDate.getDate(),
-    newDate.getMonth() + 1,
+    newDate.getMonth(),
     newDate.getFullYear(),
   ];
 
