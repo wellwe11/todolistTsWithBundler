@@ -2,19 +2,6 @@ import monthCalendar from "./calendar/monthCalendar";
 import weekCalendar from "./calendar/weekCalendar";
 import tabActions from "./tabController/tabActions";
 
-const container = document.getElementById("calendar") as HTMLDivElement,
-  calendarContainer = container.querySelector(
-    "#calendarContainer"
-  ) as HTMLDivElement,
-  calendarDays = calendarContainer.querySelector(
-    "#calendarDays"
-  ) as HTMLElement;
-
-const tabController = document.getElementById(
-    "tabTypeContainer"
-  ) as HTMLDivElement,
-  buttons = tabController.querySelectorAll("button");
-
 class CalendarType {
   private _type: string;
 
@@ -120,24 +107,15 @@ export const activeCalendar: CalendarType = new CalendarType("week");
 
 // create a month component
 
-export const week = () => {
-  weekCalendar();
-};
-
-export const month = () => {
-  const { weekDayContainer, monthDaysContainer } = monthCalendar();
-
-  calendarDays.replaceChildren(weekDayContainer, monthDaysContainer);
-};
-
 const mainCalendar = () => {
-  buttons.forEach((button) =>
-    button.addEventListener("click", (e) => tabActions(e))
-  );
+  const buttonsContainer = document.querySelector(
+    "#tabTypeContainer"
+  ) as HTMLDivElement;
+  buttonsContainer.addEventListener("click", (e) => tabActions(e));
 
-  week(); // standard page that loads
+  //   weekCalendar();
 
-  return container;
+  monthCalendar();
 };
 
 export default mainCalendar;

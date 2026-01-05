@@ -57,6 +57,7 @@ export const notifyChange = (): void => {
 // here - notifyChange
 function refreshUI(): void {
   tasks.forEach(sync); // sync tasks for each time anything is removed/added
+
   mainCalendar(); // update visual calendar
 }
 

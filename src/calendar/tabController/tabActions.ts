@@ -1,4 +1,6 @@
-import { activeCalendar, week, month } from "../mainCalendar";
+import { activeCalendar } from "../mainCalendar";
+import weekCalendar from "../calendar/weekCalendar";
+import monthCalendar from "../calendar/monthCalendar";
 
 const calendarDays = document.querySelector("#calendarDays") as HTMLDivElement;
 
@@ -25,7 +27,7 @@ export const tabActions = (event: MouseEvent) => {
         activeCalendar.type = "week";
 
         calendarDays.innerHTML = "";
-        week();
+        weekCalendar();
       }
       break;
 
@@ -38,7 +40,7 @@ export const tabActions = (event: MouseEvent) => {
         activeCalendar.type = "month";
 
         calendarDays.innerHTML = "";
-        month();
+        monthCalendar();
       }
       break;
 
