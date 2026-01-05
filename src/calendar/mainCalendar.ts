@@ -107,6 +107,7 @@ export const activeCalendar: CalendarType = new CalendarType("week");
 
 // create a month component
 
+// used for when something is changed inside of the tasks-array. Recreates only specific elements
 export const updateCalendar = () => {
   const calendarDays = document.querySelector(
     "#calendarDays"
@@ -115,9 +116,21 @@ export const updateCalendar = () => {
   const title = document.querySelector("#title") as HTMLElement;
 
   // in future, check if it is day, week or month
-  updateCalendarMonth(calendarDays, title);
+
+  const tabType = activeCalendar.type;
+
+  if (tabType === "month") {
+    updateCalendarMonth(calendarDays, title);
+  } else if (tabType === "week") {
+    weekCalendar();
+  } else {
+    ("");
+  }
+
+  console.log(activeCalendar.type);
 };
 
+// main.ts - loads once, displays the standard todo-list
 const mainCalendar = () => {
   const buttonsContainer = document.querySelector(
     "#tabTypeContainer"

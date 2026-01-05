@@ -100,8 +100,6 @@ const monthActions = (
   }
 };
 
-//
-
 // updates calendar based on active month
 // if user changes month, calendar-divs are updated and the matching events are found and placed inside of new calendar
 export const updateCalendarMonth = (
@@ -126,13 +124,6 @@ export const updateCalendarMonth = (
   monthDaysContainer.replaceChildren(...mDays);
 };
 
-// each time the tasks-array updates, this entire component refreshes.
-// It needs to be handled better, so that only components which are needed rerenders
-// For example:
-// Why is the title rerendering?
-// Why is the weekDaysContainer rerendering?
-// Why is monthDaysContainer rerendering? They're all static relevant to a task being added.
-
 const monthCalendar = () => {
   const calendarContainer = document.getElementById(
     "calendarTypeContainer"
@@ -150,13 +141,13 @@ const monthCalendar = () => {
   const calendarDays = calendarContainer.querySelector(
     "#calendarDays"
   ) as HTMLDivElement;
-  calendarDays.className = "daysGrid";
 
   const weekDaysContainer = calendarContainer.querySelector(
     "#weekdaysContainer"
   ) as HTMLDivElement;
-  weekDaysContainer.innerHTML = "";
 
+  calendarDays.className = "daysGrid monthDays";
+  weekDaysContainer.innerHTML = "";
   const title = pageController.querySelector("#title") as HTMLElement;
 
   // create week-days (mon, tue, wed, thur... etc.)
@@ -167,9 +158,7 @@ const monthCalendar = () => {
 
   weekDaysContainer.append(weekDayContainer);
 
-  pageController.addEventListener("click", (e) =>
-    monthActions(e, calendarDays, title)
-  );
+  pageController.onclick = (e) => monthActions(e, calendarDays, title);
 
   updateCalendarMonth(calendarDays, title);
 };
