@@ -4,6 +4,7 @@ import {
   handleAddToArray,
   notifyChange,
 } from "./localStorageArray/localStorageArray";
+import mainCalendar from "./calendar/mainCalendar";
 
 const form = document.querySelector<HTMLFormElement>("form");
 
@@ -14,6 +15,7 @@ try {
 
       handleAddToArray(e);
     });
+    mainCalendar();
     notifyChange();
   }
 } catch (error) {

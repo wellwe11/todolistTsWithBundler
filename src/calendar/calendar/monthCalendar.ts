@@ -73,6 +73,7 @@ const assignDatesToDay = (appender: HTMLElement, obj: Dates) => {
   ul.append(liDate);
 };
 
+// actions for when user changes current month
 const monthActions = (
   e: MouseEvent,
   monthDaysContainer: HTMLDivElement,
@@ -84,12 +85,12 @@ const monthActions = (
   switch (action) {
     case "increment":
       currentDate.incrementMonth();
-      updateCalendar(monthDaysContainer, title);
+      updateCalendarMonth(monthDaysContainer, title);
       break;
 
     case "decrement":
       currentDate.decrementMonth();
-      updateCalendar(monthDaysContainer, title);
+      updateCalendarMonth(monthDaysContainer, title);
       break;
 
     default:
@@ -99,7 +100,11 @@ const monthActions = (
   }
 };
 
-export const updateCalendar = (
+//
+
+// updates calendar based on active month
+// if user changes month, calendar-divs are updated and the matching events are found and placed inside of new calendar
+export const updateCalendarMonth = (
   monthDaysContainer: HTMLDivElement,
   title: HTMLElement
 ) => {
@@ -121,13 +126,12 @@ export const updateCalendar = (
   monthDaysContainer.replaceChildren(...mDays);
 };
 
-const createMonthCalendar = () => {
-  const monthDaysContainer = document.createElement("div") as HTMLDivElement;
-  monthDaysContainer.className = "daysGrid monthDays";
-  monthDaysContainer.innerHTML = "";
-
-  return monthDaysContainer;
-};
+// each time the tasks-array updates, this entire component refreshes.
+// It needs to be handled better, so that only components which are needed rerenders
+// For example:
+// Why is the title rerendering?
+// Why is the weekDaysContainer rerendering?
+// Why is monthDaysContainer rerendering? They're all static relevant to a task being added.
 
 const monthCalendar = () => {
   const calendarContainer = document.getElementById(
@@ -145,7 +149,8 @@ const monthCalendar = () => {
 
   const calendarDays = calendarContainer.querySelector(
     "#calendarDays"
-  ) as HTMLElement;
+  ) as HTMLDivElement;
+  calendarDays.className = "daysGrid";
 
   const weekDaysContainer = calendarContainer.querySelector(
     "#weekdaysContainer"
@@ -162,17 +167,11 @@ const monthCalendar = () => {
 
   weekDaysContainer.append(weekDayContainer);
 
-  const monthDaysContainer = createMonthCalendar();
+  pageController.addEventListener("click", (e) =>
+    monthActions(e, calendarDays, title)
+  );
 
-  calendarDays.replaceChildren(monthDaysContainer);
-
-  pageController.addEventListener("click", (e) => {
-    monthActions(e, monthDaysContainer, title);
-  });
-
-  // create a new container
-  // this container will refresh itself whenever user switches between months
-  updateCalendar(monthDaysContainer, title); // add content to container
+  updateCalendarMonth(calendarDays, title);
 };
 
 export default monthCalendar;

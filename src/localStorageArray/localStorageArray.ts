@@ -3,7 +3,7 @@ import handleInput from "../handleInput/handleInput";
 import findTaskArray from "./functions/findTaskArray";
 import setToIndex from "./functions/setToIndex";
 
-import mainCalendar from "../calendar/mainCalendar";
+import { updateCalendar } from "../calendar/mainCalendar";
 
 // handleMoveLiActions
 export type Task = {
@@ -58,7 +58,7 @@ export const notifyChange = (): void => {
 function refreshUI(): void {
   tasks.forEach(sync); // sync tasks for each time anything is removed/added
 
-  mainCalendar(); // update visual calendar
+  updateCalendar();
 }
 
 // here - refreshUI

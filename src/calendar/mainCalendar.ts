@@ -1,4 +1,4 @@
-import monthCalendar from "./calendar/monthCalendar";
+import monthCalendar, { updateCalendarMonth } from "./calendar/monthCalendar";
 import weekCalendar from "./calendar/weekCalendar";
 import tabActions from "./tabController/tabActions";
 
@@ -107,15 +107,22 @@ export const activeCalendar: CalendarType = new CalendarType("week");
 
 // create a month component
 
+export const updateCalendar = () => {
+  const calendarDays = document.querySelector(
+    "#calendarDays"
+  ) as HTMLDivElement;
+
+  const title = document.querySelector("#title") as HTMLElement;
+
+  // in future, check if it is day, week or month
+  updateCalendarMonth(calendarDays, title);
+};
+
 const mainCalendar = () => {
   const buttonsContainer = document.querySelector(
     "#tabTypeContainer"
   ) as HTMLDivElement;
   buttonsContainer.addEventListener("click", (e) => tabActions(e));
-
-  //   weekCalendar();
-
-  monthCalendar();
 };
 
 export default mainCalendar;
