@@ -1,8 +1,29 @@
-import calendar from "./calendar/calendar";
-import tabController, {
-  tab as activeTab,
-  tabActions,
-} from "./tabController/tabController";
+import monthCalendar from "./calendar/monthCalendar";
+import weekCalendar from "./calendar/weekCalendar";
+
+const container = document.getElementById("calendar") as HTMLDivElement,
+  calendarDays = container.querySelector("#calendarDays") as HTMLDivElement;
+
+const tabController = document.getElementById(
+    "tabTypeContainer"
+  ) as HTMLDivElement,
+  buttons = tabController.querySelectorAll("button");
+
+class CalendarType {
+  private _type: string;
+
+  constructor(type: string) {
+    this._type = type;
+  }
+
+  get type(): string {
+    return this._type;
+  }
+
+  set type(setter: string) {
+    this._type = setter;
+  }
+}
 
 export class CalendarData {
   private _year!: number;
@@ -70,6 +91,7 @@ export class CalendarData {
 }
 
 export const currentDate: CalendarData = new CalendarData(new Date());
+export const activeCalendar: CalendarType = new CalendarType("week");
 
 // create 3 buttons
 // today, week, month
@@ -95,23 +117,74 @@ export const currentDate: CalendarData = new CalendarData(new Date());
 
 // create a month component
 
+export const tabActions = (event: MouseEvent) => {
+  const target = event.target as HTMLElement;
+  const action = target.dataset.action;
+
+  switch (action) {
+    case "today":
+      // display a single day list.
+      // have two buttons that allows user to switch days.
+      // Start as today, and allow user to switch between today, tomorrow, next day, previous day
+      if (activeCalendar.type !== "today") {
+        activeCalendar.type = "today";
+      }
+      break;
+
+    case "week":
+      // display the week as in tall columns. Each day will have it's weekday on-top.
+      // two buttons that allows user to switch weeks.
+      // clicking a specific day will take user to that day
+
+      if (activeCalendar.type !== "week") {
+        activeCalendar.type = "week";
+
+        calendarDays.innerHTML = "";
+        week();
+      }
+      break;
+
+    case "month":
+      // display entire month.
+      // two buttons that allows user to switch between months.
+      // clicking a specific day will take user to that day.
+
+      if (activeCalendar.type !== "month") {
+        activeCalendar.type = "month";
+
+        calendarDays.innerHTML = "";
+        month();
+      }
+      break;
+
+    default:
+      activeCalendar.type = "week";
+      return new Error(
+        "-- tabController -- Cannot change tab. Probable cause: No target for action."
+      );
+  }
+};
+
+const week = () => {
+  weekCalendar();
+};
+
+const month = () => {
+  const { monthDaysContainer, controller, weekDayContainer } = monthCalendar();
+
+  calendarDays.replaceChildren(
+    controller,
+    weekDayContainer,
+    monthDaysContainer
+  );
+};
+
 const mainCalendar = () => {
-  const container = document.getElementById("calendar") as HTMLDivElement;
+  buttons.forEach((button) =>
+    button.addEventListener("click", (e) => tabActions(e))
+  );
 
-  const calendarDays = container.querySelector(
-    "#calendarDays"
-  ) as HTMLDivElement;
-  const controllerContainer = container.querySelector(
-    "#controllerContainer"
-  ) as HTMLDivElement;
-
-  tabController();
-
-  const { controller, weekDayContainer, monthDaysContainer } = calendar();
-
-  controllerContainer.append(controller, weekDayContainer);
-
-  calendarDays.replaceChildren(monthDaysContainer);
+  week(); // standard page that loads
 
   return container;
 };

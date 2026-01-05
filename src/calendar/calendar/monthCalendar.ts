@@ -98,7 +98,7 @@ export const monthController = () => {
   };
 };
 
-const calendar = () => {
+const monthCalendar = () => {
   const monthDaysContainer = document.createElement("div") as HTMLDivElement;
   monthDaysContainer.className = "daysGrid monthDays";
 
@@ -147,4 +147,4 @@ const calendar = () => {
   };
 };
 
-export default calendar;
+export default monthCalendar;
