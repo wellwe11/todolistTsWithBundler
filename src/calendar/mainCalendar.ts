@@ -1,8 +1,14 @@
 import monthCalendar from "./calendar/monthCalendar";
 import weekCalendar from "./calendar/weekCalendar";
+import tabActions from "./tabController/tabActions";
 
 const container = document.getElementById("calendar") as HTMLDivElement,
-  calendarDays = container.querySelector("#calendarDays") as HTMLDivElement;
+  calendarContainer = container.querySelector(
+    "#calendarContainer"
+  ) as HTMLDivElement,
+  calendarDays = calendarContainer.querySelector(
+    "#calendarDays"
+  ) as HTMLElement;
 
 const tabController = document.getElementById(
     "tabTypeContainer"
@@ -93,9 +99,6 @@ export class CalendarData {
 export const currentDate: CalendarData = new CalendarData(new Date());
 export const activeCalendar: CalendarType = new CalendarType("week");
 
-// create 3 buttons
-// today, week, month
-
 // clicking today will display a list of todos for today
 // on top - a button to click back and forth, displaying for example tomorrow's todo-list, yesterdays, and so forth.
 
@@ -117,66 +120,14 @@ export const activeCalendar: CalendarType = new CalendarType("week");
 
 // create a month component
 
-export const tabActions = (event: MouseEvent) => {
-  const target = event.target as HTMLElement;
-  const action = target.dataset.action;
-
-  switch (action) {
-    case "today":
-      // display a single day list.
-      // have two buttons that allows user to switch days.
-      // Start as today, and allow user to switch between today, tomorrow, next day, previous day
-      if (activeCalendar.type !== "today") {
-        activeCalendar.type = "today";
-      }
-      break;
-
-    case "week":
-      // display the week as in tall columns. Each day will have it's weekday on-top.
-      // two buttons that allows user to switch weeks.
-      // clicking a specific day will take user to that day
-
-      if (activeCalendar.type !== "week") {
-        activeCalendar.type = "week";
-
-        calendarDays.innerHTML = "";
-        week();
-      }
-      break;
-
-    case "month":
-      // display entire month.
-      // two buttons that allows user to switch between months.
-      // clicking a specific day will take user to that day.
-
-      if (activeCalendar.type !== "month") {
-        activeCalendar.type = "month";
-
-        calendarDays.innerHTML = "";
-        month();
-      }
-      break;
-
-    default:
-      activeCalendar.type = "week";
-      return new Error(
-        "-- tabController -- Cannot change tab. Probable cause: No target for action."
-      );
-  }
-};
-
-const week = () => {
+export const week = () => {
   weekCalendar();
 };
 
-const month = () => {
-  const { monthDaysContainer, controller, weekDayContainer } = monthCalendar();
+export const month = () => {
+  const { weekDayContainer, monthDaysContainer } = monthCalendar();
 
-  calendarDays.replaceChildren(
-    controller,
-    weekDayContainer,
-    monthDaysContainer
-  );
+  calendarDays.replaceChildren(weekDayContainer, monthDaysContainer);
 };
 
 const mainCalendar = () => {

@@ -1,3 +1,8 @@
+const calendarControllerContainer = document.getElementById(
+    "calendarContainer"
+  ) as HTMLElement,
+  monthDaysContainer = document.createElement("div") as HTMLDivElement;
+
 import { createDate, createTask, liElement } from "../../listItem/listItem";
 import handleMoveLiActions from "../../localStorageArray/functions/handleMoveLiActions";
 import type { Task, Dates } from "../../localStorageArray/localStorageArray";
@@ -73,74 +78,78 @@ const assignDatesToDay = (appender: HTMLElement, obj: Dates) => {
   ul.append(liDate);
 };
 
-export const monthController = () => {
-  const controller = document.createElement("div");
-  controller.innerHTML = `
-  <button class="incrementMonth">+</button>
-  <h5 class="monthTitle"></h5>
-  <button class="decrementMonth">-</button>
-  `;
+const monthActions = (e: MouseEvent) => {
+  const target = e.target as HTMLElement;
+  const action = target.dataset.action;
 
-  const title = controller.querySelector(".monthTitle") as HTMLElement;
+  console.log("asd");
 
-  const increment = controller.querySelector(
-    ".incrementMonth"
-  ) as HTMLButtonElement;
-  const decrement = controller.querySelector(
-    ".decrementMonth"
-  ) as HTMLButtonElement;
+  switch (action) {
+    case "increment":
+      currentDate.incrementMonth();
+      updateCalendar();
+      break;
 
-  return {
-    increment,
-    decrement,
-    title,
-    controller,
-  };
+    case "decrement":
+      currentDate.decrementMonth();
+      updateCalendar();
+      break;
+
+    default:
+      console.error(
+        "-- monthCalendar.ts -- No action matches monthActions event."
+      );
+  }
+};
+
+const monthController = () => {
+  const controllerButtons =
+    calendarControllerContainer?.querySelectorAll("button");
+
+  controllerButtons?.forEach((btn) =>
+    btn.addEventListener("click", (e) => monthActions(e))
+  );
+};
+
+const updateCalendar = () => {
+  const title = calendarControllerContainer.querySelector(
+    "#title"
+  ) as HTMLElement;
+
+  if (title) {
+    title.textContent = `${currentDate.month} ${currentDate.year}`;
+  }
+
+  monthDaysContainer.innerHTML = "";
+
+  const mDays = monthDays();
+  // find matching objects from local storage, that match days in month
+  tasks.forEach((dateObj) => {
+    const dayDate = dateObj.date;
+    mDays.forEach((date) => {
+      if (date.dataset.action === dayDate) {
+        assignDatesToDay(date, dateObj);
+      }
+    });
+  });
+
+  monthDaysContainer.append(...mDays);
 };
 
 const monthCalendar = () => {
-  const monthDaysContainer = document.createElement("div") as HTMLDivElement;
   monthDaysContainer.className = "daysGrid monthDays";
+  monthController();
 
   const weekDayContainer = document.createElement("div") as HTMLDivElement;
   weekDayContainer.className = "daysGrid weekDays";
 
-  const { increment, decrement, title, controller } = monthController();
   const weekDays = newWeekDays();
 
   weekDayContainer.append(...weekDays);
 
-  const updateCalendar = () => {
-    title.textContent = `${currentDate.month} ${currentDate.year}`;
-    monthDaysContainer.innerHTML = "";
-
-    const mDays = monthDays();
-    // find matching objects from local storage, that match days in month
-    tasks.forEach((dateObj) => {
-      const dayDate = dateObj.date;
-      mDays.forEach((date) => {
-        if (date.dataset.action === dayDate) {
-          assignDatesToDay(date, dateObj);
-        }
-      });
-    });
-
-    monthDaysContainer.append(...mDays);
-  };
-
-  increment.addEventListener("click", () => {
-    currentDate.incrementMonth();
-    updateCalendar();
-  });
-
-  decrement.addEventListener("click", () => {
-    currentDate.decrementMonth();
-    updateCalendar();
-  });
-
   updateCalendar();
+
   return {
-    controller,
     weekDayContainer,
     monthDaysContainer,
     updateCalendar,
