@@ -1,5 +1,5 @@
 import { updateCalendarMonth } from "./calendar/monthCalendar";
-import weekCalendar from "./calendar/weekCalendar";
+import { updateWeek } from "./calendar/weekCalendar";
 import tabActions from "./tabController/tabActions";
 
 class CalendarType {
@@ -21,6 +21,7 @@ class CalendarType {
 export class CalendarData {
   private _year!: number;
   private _monthIndex!: number;
+  private _week!: number;
 
   readonly months = [
     "January",
@@ -40,6 +41,7 @@ export class CalendarData {
   constructor(date: Date) {
     this._year = date.getFullYear();
     this._monthIndex = date.getMonth();
+    this._week = this.makeCurrentWeek;
   }
 
   get year() {
@@ -62,6 +64,31 @@ export class CalendarData {
     // adapted for euorpean calendar-days
     const date = new Date(this.year, this.monthIndex, 1).getDay();
     return date === 0 ? 7 : date;
+  }
+
+  get week() {
+    return this._week;
+  }
+
+  get makeCurrentWeek() {
+    const date = new Date();
+    const d = new Date(
+      Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
+    );
+
+    const dayNum = d.getUTCDay() || 7; // Sunday = 7
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum); // Thursday of this week
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    return Math.ceil(((d.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
+  }
+
+  incrementWeek() {
+    if (this._week >= 52) {
+      this._week = 0;
+      this._year++;
+    } else {
+      this._week++;
+    }
   }
 
   incrementMonth() {
@@ -98,7 +125,7 @@ export const updateCalendar = () => {
   if (tabType === "month") {
     updateCalendarMonth(calendarDays, title);
   } else if (tabType === "week") {
-    weekCalendar();
+    updateWeek(calendarDays, title);
   } else {
     ("");
   }

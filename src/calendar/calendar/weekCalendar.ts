@@ -1,12 +1,88 @@
-const weekCalendar = () => {
-  const controller = document.createElement("div");
-  controller.innerHTML = `
-  <button class="incrementMonth">+</button>
-  <h5 class="monthTitle"></h5>
-  <button class="decrementMonth">-</button>
-  `;
+import { currentDate } from "../mainCalendar";
 
-  const title = controller.querySelector(".monthTitle") as HTMLElement;
+const weekAction = (
+  e: MouseEvent,
+  weekDaysContainer: HTMLDivElement,
+  title: HTMLElement
+) => {
+  const target = e.target as HTMLElement;
+  const action = target.dataset.action;
+
+  switch (action) {
+    case "increment":
+      currentDate.incrementWeek();
+      updateWeek(weekDaysContainer, title);
+
+      break;
+
+    case "decrement":
+      break;
+
+    default:
+      throw new Error(
+        "-- weekCalendar.ts -- No action matches weekAction event."
+      );
+  }
+};
+
+export const updateWeek = (
+  monthDaysContainer: HTMLDivElement,
+  title: HTMLElement
+) => {
+  const daysOfWeek = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
+  ];
+
+  if (currentDate.week % 4 === 0) {
+    const firstDayOfWeek = daysOfWeek[currentDate.firstDayOfMonth - 1];
+    // weekday start at firstDayOfWeek
+    // Because a month could start on any day of the week
+  } else {
+    // now the week should start monday
+  }
+
+  console.log(currentDate.firstDayOfMonth);
+  console.log(currentDate.week);
+  title.textContent = `Week: ${currentDate.week} ${currentDate.year}`;
+  monthDaysContainer.innerHTML = "";
+};
+
+const weekCalendar = () => {
+  const calendarContainer = document.getElementById(
+    "calendarTypeContainer"
+  ) as HTMLDivElement;
+
+  if (!calendarContainer)
+    throw new Error(
+      " -- monthCalendar.ts -- Missing HTML element: #calendarTypeContainer"
+    );
+
+  const pageController = calendarContainer.querySelector(
+    "#pageController"
+  ) as HTMLDivElement;
+
+  const calendarDays = calendarContainer.querySelector(
+    "#calendarDays"
+  ) as HTMLDivElement;
+
+  const weekDaysContainer = calendarContainer.querySelector(
+    "#weekdaysContainer"
+  ) as HTMLDivElement;
+
+  const title = pageController.querySelector("#title") as HTMLElement;
+
+  calendarDays.className = "daysGrid monthDays";
+  weekDaysContainer.innerHTML = "";
+
+  pageController.onclick = (e) => weekAction(e, weekDaysContainer, title);
+
+  updateWeek(weekDaysContainer, title);
 };
 
 export default weekCalendar;
