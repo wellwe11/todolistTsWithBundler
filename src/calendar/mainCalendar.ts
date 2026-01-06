@@ -1,3 +1,4 @@
+import day from "./calendar/dayCalendar";
 import { updateCalendarMonth } from "./calendar/monthCalendar";
 import tabActions from "./tabController/tabActions";
 
@@ -20,6 +21,7 @@ class CalendarType {
 export class CalendarData {
   private _year!: number;
   private _monthIndex!: number;
+  private _day!: number;
 
   readonly months = [
     "January",
@@ -39,6 +41,7 @@ export class CalendarData {
   constructor(date: Date) {
     this._year = date.getFullYear();
     this._monthIndex = date.getMonth();
+    this._day = date.getDate();
   }
 
   get year() {
@@ -61,6 +64,29 @@ export class CalendarData {
     // adapted for euorpean calendar-days
     const date = new Date(this.year, this.monthIndex, 1).getDay();
     return date === 0 ? 7 : date;
+  }
+
+  get currentDay() {
+    // returns active day
+    // starts at current day (real-time)
+    // user may go from previous day to next day to view active Tasks
+    const dayDate = new Date(
+      this.year,
+      this.monthIndex,
+      this._day - 1
+    ).getDay();
+    return { date: this._day, weekDay: dayDate };
+  }
+
+  incrementDay() {
+    const maxDays = this.daysInMonth;
+
+    if (this._day >= maxDays) {
+      this._day = 1;
+      this.incrementMonth();
+    } else {
+      this._day++;
+    }
   }
 
   incrementMonth() {
@@ -97,6 +123,7 @@ export const updateCalendar = () => {
   if (tabType === "month") {
     updateCalendarMonth(calendarDays, title);
   } else {
+    day();
   }
 };
 

@@ -1,6 +1,7 @@
 import { activeCalendar } from "../mainCalendar";
 
 import monthCalendar from "../calendar/monthCalendar";
+import day from "../calendar/dayCalendar";
 
 const calendarDays = document.querySelector("#calendarDays") as HTMLDivElement;
 
@@ -15,6 +16,7 @@ export const tabActions = (event: MouseEvent) => {
       // Start as today, and allow user to switch between today, tomorrow, next day, previous day
       if (activeCalendar.type !== "today") {
         activeCalendar.type = "today";
+        day();
       }
       break;
 
@@ -32,7 +34,7 @@ export const tabActions = (event: MouseEvent) => {
       break;
 
     default:
-      activeCalendar.type = "week";
+      activeCalendar.type = "day";
       return new Error(
         "-- tabController -- Cannot change tab. Probable cause: No target for action."
       );
