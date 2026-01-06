@@ -1,5 +1,5 @@
 import { activeCalendar } from "../mainCalendar";
-import weekCalendar from "../calendar/weekCalendar";
+
 import monthCalendar from "../calendar/monthCalendar";
 
 const calendarDays = document.querySelector("#calendarDays") as HTMLDivElement;
@@ -15,19 +15,6 @@ export const tabActions = (event: MouseEvent) => {
       // Start as today, and allow user to switch between today, tomorrow, next day, previous day
       if (activeCalendar.type !== "today") {
         activeCalendar.type = "today";
-      }
-      break;
-
-    case "week":
-      // display the week as in tall columns. Each day will have it's weekday on-top.
-      // two buttons that allows user to switch weeks.
-      // clicking a specific day will take user to that day
-
-      if (activeCalendar.type !== "week") {
-        activeCalendar.type = "week";
-
-        calendarDays.innerHTML = "";
-        weekCalendar();
       }
       break;
 
