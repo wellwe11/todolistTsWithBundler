@@ -1,5 +1,5 @@
 import { updateCalendarMonth } from "./calendar/monthCalendar";
-import { updateWeek } from "./calendar/weekCalendar";
+import weekCalendar, { updateWeek } from "./calendar/weekCalendar";
 import tabActions from "./tabController/tabActions";
 
 class CalendarType {
@@ -84,10 +84,19 @@ export class CalendarData {
 
   incrementWeek() {
     if (this._week >= 52) {
-      this._week = 0;
+      this._week = 1;
       this._year++;
     } else {
       this._week++;
+    }
+  }
+
+  decrementWeek() {
+    if (this._week === 1) {
+      this._week = 52;
+      this._year--;
+    } else {
+      this._week--;
     }
   }
 
@@ -137,6 +146,8 @@ const mainCalendar = () => {
     "#tabTypeContainer"
   ) as HTMLDivElement;
   buttonsContainer.addEventListener("click", (e) => tabActions(e));
+
+  weekCalendar();
 };
 
 export default mainCalendar;

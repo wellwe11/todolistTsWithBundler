@@ -12,10 +12,11 @@ const weekAction = (
     case "increment":
       currentDate.incrementWeek();
       updateWeek(weekDaysContainer, title);
-
       break;
 
     case "decrement":
+      currentDate.decrementWeek();
+      updateWeek(weekDaysContainer, title);
       break;
 
     default:
@@ -40,15 +41,12 @@ export const updateWeek = (
   ];
 
   if (currentDate.week % 4 === 0) {
+    // if first week of month - could start on any day
     const firstDayOfWeek = daysOfWeek[currentDate.firstDayOfMonth - 1];
-    // weekday start at firstDayOfWeek
-    // Because a month could start on any day of the week
   } else {
-    // now the week should start monday
+    // else always start on a monday
   }
 
-  console.log(currentDate.firstDayOfMonth);
-  console.log(currentDate.week);
   title.textContent = `Week: ${currentDate.week} ${currentDate.year}`;
   monthDaysContainer.innerHTML = "";
 };
