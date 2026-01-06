@@ -21,8 +21,15 @@
 
 /* for when 'Today' is active - displays a grid of hourly times */
 .timeGrid {
+  height: 100vh;
+  width: 30%;
   background-color: orange;
   display: grid;
+}
+
+.hourContainer {
+  background-color: green;
+  border-bottom: 1px solid black;
 }
 
 .weekDays {

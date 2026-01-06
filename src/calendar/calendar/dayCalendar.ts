@@ -29,6 +29,8 @@ const dayActions = (
 };
 
 const updateDay = (calendarDays: HTMLDivElement, title: HTMLElement) => {
+  createDayTimes(calendarDays);
+
   const weekDay = dayNames[currentDate.currentDay.weekDay];
   const date = currentDate.currentDay.date;
 
@@ -39,7 +41,7 @@ const updateDay = (calendarDays: HTMLDivElement, title: HTMLElement) => {
   tasks.forEach((t) => taskMap.set(t.date, t));
 
   if (taskMap.has(activeDate)) {
-    console.log(activeDate);
+    console.log(taskMap.get(activeDate));
     const ul = createDateWithTasksEl(taskMap.get(activeDate));
 
     calendarDays.append(ul);
@@ -50,6 +52,28 @@ const updateDay = (calendarDays: HTMLDivElement, title: HTMLElement) => {
 
 const createDayTimes = (appender: HTMLDivElement) => {
   appender.classList = "timeGrid";
+
+  // next step: each Task in Date > tasks should have a due-date time. If none is selected, take 1 hour in the future.
+  // This will be used to add them to the grid-layout.
+
+  const hoursADay = 24;
+
+  const gridTimes = () => {
+    for (let i = 0; i < hoursADay; i++) {
+      const hourContainer = document.createElement("div") as HTMLDivElement;
+      hourContainer.className = "hourContainer";
+      hourContainer.dataset.name = `time ${i}`;
+      hourContainer.innerHTML = `
+        <h3 classname="hourText"></h3>
+        `;
+      appender.append(hourContainer);
+
+      const text = hourContainer.querySelector("h3") as HTMLElement;
+      text.textContent = String(i);
+    }
+  };
+
+  return gridTimes();
 };
 
 const day = () => {
@@ -62,7 +86,7 @@ const day = () => {
       " -- monthCalendar.ts -- Missing HTML element: #calendarTypeContainer"
     );
 
-  const weekDays = calendarContainer.querySelector(
+  const weekDaysContainer = calendarContainer.querySelector(
     "#gridSectionNamesContainer"
   ) as HTMLDivElement;
 
