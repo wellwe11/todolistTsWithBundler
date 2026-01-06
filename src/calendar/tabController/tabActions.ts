@@ -4,6 +4,9 @@ import monthCalendar from "../calendar/monthCalendar";
 import day from "../calendar/dayCalendar";
 
 const calendarDays = document.querySelector("#calendarDays") as HTMLDivElement;
+const weekdaysContainer = document.querySelector(
+  "#weekdaysContainer"
+) as HTMLDivElement;
 
 export const tabActions = (event: MouseEvent) => {
   const target = event.target as HTMLElement;
@@ -16,6 +19,8 @@ export const tabActions = (event: MouseEvent) => {
       // Start as today, and allow user to switch between today, tomorrow, next day, previous day
       if (activeCalendar.type !== "today") {
         activeCalendar.type = "today";
+        calendarDays.innerHTML = "";
+        weekdaysContainer.innerHTML = "";
         day();
       }
       break;
@@ -27,7 +32,7 @@ export const tabActions = (event: MouseEvent) => {
 
       if (activeCalendar.type !== "month") {
         activeCalendar.type = "month";
-
+        weekdaysContainer.innerHTML = "";
         calendarDays.innerHTML = "";
         monthCalendar();
       }
