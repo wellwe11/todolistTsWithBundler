@@ -49,7 +49,7 @@ const newWeekDays = () => {
     div.textContent = dayNames[i];
 
     if (isFirstWeekOfMonth && i === startIndex && currentDate.week) {
-      div.style.gridColumnStart = String(startIndex);
+      div.style.gridColumnStart = String(startIndex + 1);
     }
 
     array.push(div);
