@@ -48,6 +48,10 @@ const updateDay = (calendarDays: HTMLDivElement, title: HTMLElement) => {
   }
 };
 
+const createDayTimes = (appender: HTMLDivElement) => {
+  appender.classList = "timeGrid";
+};
+
 const day = () => {
   const calendarContainer = document.getElementById(
     "calendarTypeContainer"
@@ -58,8 +62,12 @@ const day = () => {
       " -- monthCalendar.ts -- Missing HTML element: #calendarTypeContainer"
     );
 
+  const weekDays = calendarContainer.querySelector(
+    "#gridSectionNamesContainer"
+  ) as HTMLDivElement;
+
   const calendarDays = calendarContainer.querySelector(
-    "#calendarDays"
+    "#calendarGridContainer"
   ) as HTMLDivElement;
 
   const pageController = calendarContainer.querySelector(

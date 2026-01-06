@@ -12,10 +12,17 @@
   padding: 2vw 3vw;
 }
 
+/* for when 'Month' is active - sets both month/weekdays to the same grid-layout */
 .daysGrid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: clamp(10px, 5vw, 50px);
+}
+
+/* for when 'Today' is active - displays a grid of hourly times */
+.timeGrid {
+  background-color: orange;
+  display: grid;
 }
 
 .weekDays {

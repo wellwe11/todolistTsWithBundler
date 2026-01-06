@@ -3,9 +3,12 @@ import { activeCalendar } from "../mainCalendar";
 import monthCalendar from "../calendar/monthCalendar";
 import day from "../calendar/dayCalendar";
 
-const calendarDays = document.querySelector("#calendarDays") as HTMLDivElement;
 const weekdaysContainer = document.querySelector(
-  "#weekdaysContainer"
+  "#gridSectionNamesContainer"
+) as HTMLDivElement;
+
+const calendarDays = document.querySelector(
+  "#calendarGridContainer"
 ) as HTMLDivElement;
 
 export const tabActions = (event: MouseEvent) => {

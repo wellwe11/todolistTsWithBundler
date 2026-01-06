@@ -107,21 +107,21 @@ const monthCalendar = () => {
     "#pageController"
   ) as HTMLDivElement;
 
-  const calendarDays = calendarContainer.querySelector(
-    "#calendarDays"
-  ) as HTMLDivElement;
-
   const weekDaysContainer = calendarContainer.querySelector(
-    "#weekdaysContainer"
+    "#gridSectionNamesContainer"
   ) as HTMLDivElement;
 
-  calendarDays.className = "daysGrid monthDays";
+  const calendarDays = calendarContainer.querySelector(
+    "#calendarGridContainer"
+  ) as HTMLDivElement;
+
+  calendarDays.className = "daysGrid monthDays"; // same layout for both monthly days and weekly days
   weekDaysContainer.innerHTML = "";
   const title = pageController.querySelector("#title") as HTMLElement;
 
   // create week-days (mon, tue, wed, thur... etc.)
   const weekDayContainer = document.createElement("div") as HTMLDivElement;
-  weekDayContainer.className = "daysGrid weekDays";
+  weekDayContainer.className = "daysGrid weekDays"; // same layout for both monthly days and weekly days
   const weekDays = newWeekDays();
   weekDayContainer.append(...weekDays);
 
