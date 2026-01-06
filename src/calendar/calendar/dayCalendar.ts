@@ -1,4 +1,6 @@
 import { currentDate } from "../mainCalendar";
+import { tasks } from "../../localStorageArray/localStorageArray";
+import { Dates } from "../../localStorageArray/localStorageArray";
 
 const dayNames = [
   "Monday",
@@ -25,11 +27,32 @@ const dayActions = (
   }
 };
 
+const createDailyTasks = (date: Dates, appender: HTMLDivElement) => {
+  const dayList = document.createElement("div");
+  const text = document.createElement("h1");
+  text.textContent = `HELLO ${date.date}`;
+
+  dayList.append(text);
+
+  appender.append(dayList);
+  console.log(date, appender);
+};
+
 const updateDay = (calendarDays: HTMLDivElement, title: HTMLElement) => {
   const weekDay = dayNames[currentDate.currentDay.weekDay];
   const date = currentDate.currentDay.date;
 
   title.textContent = `${weekDay}, ${date} ${currentDate.month}`;
+  const activeDate = `${date}/${currentDate.monthIndex}/${currentDate.year}`;
+
+  const taskMap = new Map();
+  tasks.forEach((t) => taskMap.set(t.date, t));
+
+  if (taskMap.has(activeDate)) {
+    createDailyTasks(taskMap.get(activeDate), calendarDays);
+  } else {
+    calendarDays.innerHTML = "";
+  }
 };
 
 const day = () => {
