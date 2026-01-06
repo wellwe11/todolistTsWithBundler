@@ -76,7 +76,7 @@ const assignDatesToDay = (appender: HTMLElement, obj: Dates) => {
 // actions for when user changes current month
 const monthActions = (
   e: MouseEvent,
-  monthDaysContainer: HTMLDivElement,
+  calendarDays: HTMLDivElement,
   title: HTMLElement
 ) => {
   const target = e.target as HTMLElement;
@@ -85,12 +85,12 @@ const monthActions = (
   switch (action) {
     case "increment":
       currentDate.incrementMonth();
-      updateCalendarMonth(monthDaysContainer, title);
+      updateCalendarMonth(calendarDays, title);
       break;
 
     case "decrement":
       currentDate.decrementMonth();
-      updateCalendarMonth(monthDaysContainer, title);
+      updateCalendarMonth(calendarDays, title);
       break;
 
     default:
@@ -103,11 +103,11 @@ const monthActions = (
 // updates calendar based on active month
 // if user changes month, calendar-divs are updated and the matching events are found and placed inside of new calendar
 export const updateCalendarMonth = (
-  monthDaysContainer: HTMLDivElement,
+  calendarDays: HTMLDivElement,
   title: HTMLElement
 ) => {
   title.textContent = `${currentDate.month} ${currentDate.year}`;
-  monthDaysContainer.innerHTML = "";
+  calendarDays.innerHTML = "";
 
   const mDays = monthDays();
 
@@ -121,7 +121,7 @@ export const updateCalendarMonth = (
     }
   });
 
-  monthDaysContainer.replaceChildren(...mDays);
+  calendarDays.replaceChildren(...mDays);
 };
 
 const monthCalendar = () => {

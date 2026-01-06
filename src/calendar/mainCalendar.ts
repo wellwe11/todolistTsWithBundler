@@ -83,6 +83,10 @@ export class CalendarData {
   }
 
   incrementWeek() {
+    if (this._week % 4 === 0) {
+      this._monthIndex++;
+    }
+
     if (this._week >= 52) {
       this._week = 1;
       this._year++;
@@ -92,6 +96,10 @@ export class CalendarData {
   }
 
   decrementWeek() {
+    if (this._week % 4 === 0) {
+      this._monthIndex--;
+    }
+
     if (this._week === 1) {
       this._week = 52;
       this._year--;

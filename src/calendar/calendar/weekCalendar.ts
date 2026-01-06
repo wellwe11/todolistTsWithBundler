@@ -2,7 +2,7 @@ import { currentDate } from "../mainCalendar";
 
 const weekAction = (
   e: MouseEvent,
-  weekDaysContainer: HTMLDivElement,
+  calendarDays: HTMLDivElement,
   title: HTMLElement
 ) => {
   const target = e.target as HTMLElement;
@@ -11,12 +11,12 @@ const weekAction = (
   switch (action) {
     case "increment":
       currentDate.incrementWeek();
-      updateWeek(weekDaysContainer, title);
+      updateWeek(calendarDays, title);
       break;
 
     case "decrement":
       currentDate.decrementWeek();
-      updateWeek(weekDaysContainer, title);
+      updateWeek(calendarDays, title);
       break;
 
     default:
@@ -26,29 +26,47 @@ const weekAction = (
   }
 };
 
-export const updateWeek = (
-  monthDaysContainer: HTMLDivElement,
-  title: HTMLElement
-) => {
-  const daysOfWeek = [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday",
-  ];
+// static never-changing weekdays: monday, tuesday, wednesday etc.
+const dayNames = [
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday",
+];
+const newWeekDays = () => {
+  const isFirstWeekOfMonth = currentDate.week % 4 === 1;
+  const array = [];
 
-  if (currentDate.week % 4 === 0) {
-    // if first week of month - could start on any day
-    const firstDayOfWeek = daysOfWeek[currentDate.firstDayOfMonth - 1];
-  } else {
-    // else always start on a monday
+  const firstDayOfWeek = dayNames[currentDate.firstDayOfMonth - 1];
+  const startIndex = isFirstWeekOfMonth ? dayNames.indexOf(firstDayOfWeek) : 0;
+
+  for (let i = startIndex; i <= dayNames.length; i++) {
+    const div = document.createElement("div");
+    div.className = "weekday" + " " + dayNames[i];
+    div.textContent = dayNames[i];
+
+    if (isFirstWeekOfMonth && i === startIndex && currentDate.week) {
+      div.style.gridColumnStart = String(startIndex);
+    }
+
+    array.push(div);
   }
 
-  title.textContent = `Week: ${currentDate.week} ${currentDate.year}`;
-  monthDaysContainer.innerHTML = "";
+  return array;
+};
+
+export const updateWeek = (
+  calendarDays: HTMLDivElement,
+  title: HTMLElement
+) => {
+  title.textContent = `Week: ${currentDate.week} ${currentDate.month} ${currentDate.year}`;
+  calendarDays.innerHTML = "";
+
+  const weekDays = newWeekDays();
+  calendarDays.append(...weekDays);
 };
 
 const weekCalendar = () => {
@@ -69,18 +87,14 @@ const weekCalendar = () => {
     "#calendarDays"
   ) as HTMLDivElement;
 
-  const weekDaysContainer = calendarContainer.querySelector(
-    "#weekdaysContainer"
-  ) as HTMLDivElement;
-
   const title = pageController.querySelector("#title") as HTMLElement;
 
   calendarDays.className = "daysGrid monthDays";
-  weekDaysContainer.innerHTML = "";
+  calendarDays.innerHTML = "";
 
-  pageController.onclick = (e) => weekAction(e, weekDaysContainer, title);
+  pageController.onclick = (e) => weekAction(e, calendarDays, title);
 
-  updateWeek(weekDaysContainer, title);
+  updateWeek(calendarDays, title);
 };
 
 export default weekCalendar;
