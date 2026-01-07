@@ -13,7 +13,7 @@ export type Task = {
   createdAt: Date;
   list: ChildTask[];
   dueDate: string | Date;
-  time: string | Date;
+  dueTime: string | Date;
 };
 
 export type ChildTask = {
@@ -112,6 +112,9 @@ export const handleAddToArray = (e: Event): void => {
     newDate.getMonth(),
     newDate.getFullYear(),
   ];
+  const newTime = `${newDate.getHours() + 1}:${newDate.getMinutes()}`;
+
+  console.log(newTime);
 
   const liItem: Task = {
     id: crypto.randomUUID(),
@@ -120,7 +123,7 @@ export const handleAddToArray = (e: Event): void => {
     createdAt: new Date(),
     list: [],
     dueDate: `${day}/${month}/${year}`,
-    time: time,
+    dueTime: time.length < 1 ? newTime : time,
   };
 
   const foundDate = tasks.find((t) => t.date === `${day}/${month}/${year}`);
@@ -220,8 +223,8 @@ export const syncNewOrder = (
 // finds correct date, task OR taskChild, then updates value of key 'completed'
 export const toggleCompleted = (id: string, parentId: string): void => {
   const localArray = [...tasks];
+  // // find specific date
 
-  // find specific date
   const dateList = localArray.find((d) => d.id === parentId);
   if (!dateList) return;
 
@@ -230,8 +233,10 @@ export const toggleCompleted = (id: string, parentId: string): void => {
   if (!taskList || taskList.length < 1) return;
 
   // find item to be completed
-  const task = taskList.findIndex((t) => t.id === id);
-  taskList[task].completed = !taskList[task].completed;
+  const task = taskList.find((t) => t.id === id);
+  if (!task) return;
+
+  task.completed = !task.completed;
 
   notifyChange();
 };
@@ -251,7 +256,8 @@ export const handleAddChild = (
   let tasksList = dateList.tasks;
   if (!tasksList || tasksList.length < 1) return;
 
-  const task = tasksList.findIndex((t) => t.id === id);
+  const task = tasksList.find((t) => t.id === id);
+  if (!task) return;
 
   const liItem: ChildTask = {
     id: crypto.randomUUID(),
@@ -260,7 +266,7 @@ export const handleAddChild = (
     createdAt: new Date(),
   };
 
-  tasksList[task].list.push(liItem);
+  task.list.push(liItem);
 
   tasks = localArray;
 

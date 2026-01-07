@@ -1,4 +1,4 @@
-import type { Task } from "../localStorageArray";
+import type { ChildTask, Task } from "../localStorageArray";
 
 // Because localStorage consists of different lists, this function helps find specific ararys
 // example:
@@ -10,7 +10,7 @@ const isTask = (obj: any, typeCheck: string): obj is Task => {
   return typeof obj === "object" && obj !== null && typeCheck in obj;
 };
 
-const findTaskArray = (arr: Object[], id: string) => {
+const findTaskArray = (arr: Task[] | ChildTask[], id: string) => {
   for (const task of arr) {
     if (isTask(task, "id") && task.id === id) {
       return arr;
