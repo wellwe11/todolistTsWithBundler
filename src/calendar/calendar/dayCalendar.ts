@@ -56,7 +56,7 @@ export const updateDay = (calendarDays: HTMLDivElement, title: HTMLElement) => {
       const hour = t.dueTime.split(":")[0];
       console.log(gridElements[index]);
 
-      gridElements[index].append(liElements[index]);
+      gridElements[hour].append(liElements[index]);
     });
 
     liParent.append(...gridElements);
