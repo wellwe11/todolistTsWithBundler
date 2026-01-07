@@ -41,7 +41,9 @@ export const updateDay = (calendarDays: HTMLDivElement, title: HTMLElement) => {
   tasks.forEach((t) => taskMap.set(t.date, t));
 
   if (taskMap.has(activeDate)) {
-    const tasks = taskMap.get(activeDate).tasks;
+    const activeDateMapped = taskMap.get(activeDate);
+    console.log(activeDateMapped);
+    const tasks = activeDateMapped.tasks;
 
     // create list with times for same day
     const ul = createDateWithTasksEl(taskMap.get(activeDate));
@@ -63,23 +65,22 @@ export const updateDay = (calendarDays: HTMLDivElement, title: HTMLElement) => {
 
     [...timeMap].forEach(([time, tasks]) => {
       const timeContainer = createTimeElement(time);
+      const tasksContainer = document.createElement("ul");
+      tasksContainer.className = "dateLi";
+      tasksContainer.id = activeDateMapped.id;
 
-      tasks.forEach((task, index) => {
+      timeContainer.append(tasksContainer);
+
+      tasks.forEach((task) => {
         const findEl = [...liElements].find(
           (e) => e.id === task.id
         ) as HTMLElement;
 
-        timeContainer.append(findEl);
+        tasksContainer.append(findEl);
       });
 
       ul.append(timeContainer);
     });
-
-    // taskEntries.forEach(([entry]) => {
-    //   const timeContainer = createTimeElement(t);
-    //   timeContainer.append(liElements[index]);
-    //   liParent.append(timeContainer);
-    // });
 
     calendarDays.append(ul);
   } else {
@@ -91,6 +92,7 @@ const createTimeElement = (time: string) => {
   const hourContainer = document.createElement("div") as HTMLDivElement;
   hourContainer.className = "hourContainer";
   hourContainer.dataset.name = `time ${time}`;
+  hourContainer.id = "hourContainer";
   hourContainer.innerHTML = `
           <h3 classname="hourText"></h3>
           `;

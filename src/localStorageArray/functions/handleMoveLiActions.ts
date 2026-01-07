@@ -11,9 +11,7 @@ const handleMoveLiActions = (event: MouseEvent) => {
 
   const element = target.closest("li") as HTMLLIElement;
 
-  const parent = element.closest(".timeGrid");
-
-  if (!parent) return;
+  const parent = element.closest(".dateLi");
 
   const parentId = parent?.id as string;
   const id = element.id;
@@ -51,7 +49,9 @@ const handleMoveLiActions = (event: MouseEvent) => {
       break;
 
     default:
-      return new Error("-- handleLiActions -- No element to perform action on");
+      return new Error(
+        `-- handleLiActions -- No element to perform action on, or parent missing: Element: ${element}, Parent: ${parent}`
+      );
   }
 };
 
