@@ -133,8 +133,6 @@ const mainCalendar = () => {
     "#tabTypeContainer"
   ) as HTMLDivElement;
   buttonsContainer.addEventListener("click", (e) => tabActions(e));
-
-  // dayUpdate();
 };
 
 export default mainCalendar;
