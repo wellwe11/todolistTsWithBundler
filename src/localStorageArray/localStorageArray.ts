@@ -48,6 +48,8 @@ export class Dates {
 
 export let tasks: Dates[] = loadTasks();
 
+console.log(tasks);
+
 // here & main.ts - tasks
 export const notifyChange = (): void => {
   sortByDate();
@@ -56,18 +58,21 @@ export const notifyChange = (): void => {
 };
 // here - notifyChange
 function refreshUI(): void {
-  tasks.forEach(sync); // sync tasks for each time anything is removed/added
+  tasks.filter(sync); // sync tasks for each time anything is removed/added
 
   updateCalendar();
 }
 
 // here - refreshUI
 function sync(date: Dates) {
-  if (!date) return;
+  if (date.tasks.length > 0) {
+    return date;
+  } else {
+    const index = tasks.findIndex((t) => t.id === date.id);
 
-  if (date.tasks.length <= 0) {
-    const filtered = tasks.filter((d) => d.id !== date.id);
-    return (tasks = filtered);
+    if (index !== -1) {
+      tasks.splice(index, 1);
+    }
   }
 }
 
@@ -207,7 +212,9 @@ export const syncNewOrder = (
 
   const localArray = [...tasks];
 
+  // finds date
   const dateList = localArray.find((d) => d.id === parentId);
+
   if (!dateList) return;
 
   let taskList = findTaskArray(dateList.tasks, id);
@@ -216,7 +223,9 @@ export const syncNewOrder = (
   const item = taskList.splice(oldIndex, 1)[0];
 
   taskList.splice(newIndex, 0, item);
+
   tasks = localArray;
+
   notifyChange();
 };
 

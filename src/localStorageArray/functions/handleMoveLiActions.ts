@@ -13,7 +13,8 @@ const handleMoveLiActions = (event: MouseEvent) => {
 
   const parent = element.closest(".dateLi");
 
-  const parentId = parent?.id as string;
+  const parentId = parent!.id as string;
+
   const id = element.id;
 
   switch (action) {
