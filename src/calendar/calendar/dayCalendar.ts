@@ -42,8 +42,10 @@ export const updateDay = (calendarDays: HTMLDivElement, title: HTMLElement) => {
 
   if (taskMap.has(activeDate)) {
     const activeDateMapped = taskMap.get(activeDate);
-    console.log(activeDateMapped);
-    const tasks = activeDateMapped.tasks;
+
+    const tasks = activeDateMapped.tasks.sort(
+      (a, b) => +a.dueTime.replace(":", "") - +b.dueTime.replace(":", "")
+    );
 
     // create list with times for same day
     const ul = createDateWithTasksEl(taskMap.get(activeDate));
