@@ -1,4 +1,4 @@
-import day from "./calendar/dayCalendar";
+import day, { updateDay } from "./calendar/dayCalendar";
 import { updateCalendarMonth } from "./calendar/monthCalendar";
 import tabActions from "./tabController/tabActions";
 
@@ -113,7 +113,7 @@ export const activeCalendar: CalendarType = new CalendarType("week");
 
 export const updateCalendar = () => {
   const calendarDays = document.querySelector(
-    "#calendarDays"
+    "#calendarGridContainer"
   ) as HTMLDivElement;
 
   const title = document.querySelector("#title") as HTMLElement;
@@ -123,7 +123,7 @@ export const updateCalendar = () => {
   if (tabType === "month") {
     updateCalendarMonth(calendarDays, title);
   } else {
-    day();
+    updateDay(calendarDays, title);
   }
 };
 

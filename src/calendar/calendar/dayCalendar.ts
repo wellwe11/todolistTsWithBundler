@@ -28,9 +28,10 @@ const dayActions = (
   }
 };
 
-const updateDay = (calendarDays: HTMLDivElement, title: HTMLElement) => {
+export const updateDay = (calendarDays: HTMLDivElement, title: HTMLElement) => {
   const weekDay = dayNames[currentDate.currentDay.weekDay];
   const date = currentDate.currentDay.date;
+  calendarDays.innerHTML = "";
 
   title.textContent = `${weekDay}, ${date} ${currentDate.month}`;
   const activeDate = `${date}/${currentDate.monthIndex}/${currentDate.year}`;
