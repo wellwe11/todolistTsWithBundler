@@ -55,6 +55,7 @@ export const updateDay = (calendarDays: HTMLDivElement, title: HTMLElement) => {
 
     tasks.forEach((t: Task, index: number) => {
       const hour = t.dueTime.split(":")[0];
+      console.log(t.dueTime);
       console.log(t.dueTime, hour);
       liElements[index].style.gridRowStart = hour;
     });
