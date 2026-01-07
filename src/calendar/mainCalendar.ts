@@ -1,4 +1,4 @@
-import day, { updateDay } from "./calendar/dayCalendar";
+import { updateDay } from "./calendar/dayCalendar";
 import { updateCalendarMonth } from "./calendar/monthCalendar";
 import tabActions from "./tabController/tabActions";
 

@@ -1,5 +1,5 @@
 import { currentDate } from "../mainCalendar";
-import { tasks } from "../../localStorageArray/localStorageArray";
+import { tasks, type Task } from "../../localStorageArray/localStorageArray";
 
 import createDateWithTasksEl from "./functions/createDateWithTasksEl";
 
@@ -46,20 +46,18 @@ export const updateDay = (calendarDays: HTMLDivElement, title: HTMLElement) => {
     const ul = createDateWithTasksEl(taskMap.get(activeDate));
 
     const liParent = ul.querySelector("li") as HTMLElement;
-    liParent.classList = "timeGrid";
 
     const gridElements = createDayTimes();
+    liParent.append(...gridElements);
 
     const liElements = liParent.querySelectorAll("li");
+    liParent.classList = "timeGrid";
 
-    tasks.forEach((t, index) => {
+    tasks.forEach((t: Task, index: number) => {
       const hour = t.dueTime.split(":")[0];
-      console.log(gridElements[index]);
-
-      gridElements[hour].append(liElements[index]);
+      console.log(t.dueTime, hour);
+      liElements[index].style.gridRowStart = hour;
     });
-
-    liParent.append(...gridElements);
 
     calendarDays.append(ul);
   } else {
@@ -75,6 +73,7 @@ const createDayTimes = () => {
   for (let i = 0; i < hoursADay; i++) {
     const hourContainer = document.createElement("div") as HTMLDivElement;
     hourContainer.className = "hourContainer";
+    hourContainer.style.gridRowStart = String(i);
     hourContainer.dataset.name = `time ${i}`;
     hourContainer.innerHTML = `
         <h3 classname="hourText"></h3>

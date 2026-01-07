@@ -13,7 +13,7 @@ export type Task = {
   createdAt: Date;
   list: ChildTask[];
   dueDate: string | Date;
-  dueTime: string | Date;
+  dueTime: string;
 };
 
 export type ChildTask = {
@@ -113,8 +113,6 @@ export const handleAddToArray = (e: Event): void => {
     newDate.getFullYear(),
   ];
   const newTime = `${newDate.getHours() + 1}:${newDate.getMinutes()}`;
-
-  console.log(newTime);
 
   const liItem: Task = {
     id: crypto.randomUUID(),
