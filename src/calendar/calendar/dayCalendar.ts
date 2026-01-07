@@ -30,6 +30,7 @@ const dayActions = (
 
 export const updateDay = (calendarDays: HTMLDivElement, title: HTMLElement) => {
   calendarDays.innerHTML = "";
+  calendarDays.classList = "";
 
   const weekDay = dayNames[currentDate.currentDay.weekDay];
   const date = currentDate.currentDay.date;
