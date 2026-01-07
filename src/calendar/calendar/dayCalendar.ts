@@ -1,4 +1,4 @@
-import { currentDate } from "../mainCalendar";
+import { currentDate, updateCalendar } from "../mainCalendar";
 import { tasks, type Task } from "../../localStorageArray/localStorageArray";
 
 import createDateWithTasksEl from "./functions/createDateWithTasksEl";
@@ -55,9 +55,8 @@ export const updateDay = (calendarDays: HTMLDivElement, title: HTMLElement) => {
 
     tasks.forEach((t: Task, index: number) => {
       const hour = t.dueTime.split(":")[0];
-      console.log(t.dueTime);
-      console.log(t.dueTime, hour);
-      liElements[index].style.gridRowStart = hour;
+
+      liElements[index].style.gridRowStart = String(+hour + 1);
     });
 
     calendarDays.append(ul);
@@ -74,7 +73,7 @@ const createDayTimes = () => {
   for (let i = 0; i < hoursADay; i++) {
     const hourContainer = document.createElement("div") as HTMLDivElement;
     hourContainer.className = "hourContainer";
-    hourContainer.style.gridRowStart = String(i);
+    hourContainer.style.gridRowStart = String(i + 1);
     hourContainer.dataset.name = `time ${i}`;
     hourContainer.innerHTML = `
         <h3 classname="hourText"></h3>
@@ -114,6 +113,8 @@ const day = () => {
   const title = pageController.querySelector("#title") as HTMLElement;
 
   pageController.onclick = (e) => dayActions(e, calendarDays, title);
+
+  updateDay(calendarDays, title);
 };
 
 export default day;
