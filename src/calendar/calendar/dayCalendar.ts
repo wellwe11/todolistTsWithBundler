@@ -43,22 +43,6 @@ export const updateDay = (calendarDays: HTMLDivElement, title: HTMLElement) => {
   if (taskMap.has(activeDate)) {
     const tasks = taskMap.get(activeDate).tasks;
 
-    const timeMap = new Map();
-    tasks.forEach((t: Task) => timeMap.set(t.dueTime, t));
-
-    const filterByTime = () => {
-      const tasksByTime: Record<string, Task[]> = {};
-
-      tasks.forEach((t: Task) => {
-        if (!tasksByTime.hasOwnProperty(t.dueTime)) {
-          tasksByTime[t.dueTime] = [];
-        }
-        tasksByTime[t.dueTime].push(t);
-      });
-
-      return tasksByTime;
-    };
-
     // create list with times for same day
     const ul = createDateWithTasksEl(taskMap.get(activeDate));
 
@@ -67,12 +51,17 @@ export const updateDay = (calendarDays: HTMLDivElement, title: HTMLElement) => {
     liParent.classList = "timeGrid";
 
     const liElements = liParent.querySelectorAll("li");
-    console.log(liElements);
 
-    const filteredTasks = filterByTime();
-    const taskEntries = Object.entries(filteredTasks);
+    const timeMap = new Map<string, Task[]>();
+    tasks.forEach((t: Task) => {
+      const existing = timeMap.get(t.dueTime) || [];
 
-    taskEntries.forEach(([time, tasks]) => {
+      existing.push(t);
+
+      timeMap.set(t.dueTime, existing);
+    });
+
+    [...timeMap].forEach(([time, tasks]) => {
       const timeContainer = createTimeElement(time);
 
       tasks.forEach((task, index) => {
