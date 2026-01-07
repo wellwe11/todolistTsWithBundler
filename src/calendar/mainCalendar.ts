@@ -1,5 +1,5 @@
-import { updateDay } from "./calendar/dayCalendar";
-import { updateCalendarMonth } from "./calendar/monthCalendar";
+import day, { updateDay } from "./calendar/dayCalendar";
+import monthCalendar, { updateCalendarMonth } from "./calendar/monthCalendar";
 import tabActions from "./tabController/tabActions";
 
 class CalendarType {
@@ -133,6 +133,8 @@ const mainCalendar = () => {
     "#tabTypeContainer"
   ) as HTMLDivElement;
   buttonsContainer.addEventListener("click", (e) => tabActions(e));
+
+  day();
 };
 
 export default mainCalendar;
