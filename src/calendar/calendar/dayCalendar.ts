@@ -29,9 +29,10 @@ const dayActions = (
 };
 
 export const updateDay = (calendarDays: HTMLDivElement, title: HTMLElement) => {
+  calendarDays.innerHTML = "";
+
   const weekDay = dayNames[currentDate.currentDay.weekDay];
   const date = currentDate.currentDay.date;
-  calendarDays.innerHTML = "";
 
   title.textContent = `${weekDay}, ${date} ${currentDate.month}`;
   const activeDate = `${date}/${currentDate.monthIndex}/${currentDate.year}`;
@@ -40,8 +41,25 @@ export const updateDay = (calendarDays: HTMLDivElement, title: HTMLElement) => {
   tasks.forEach((t) => taskMap.set(t.date, t));
 
   if (taskMap.has(activeDate)) {
-    console.log(taskMap.get(activeDate));
+    const tasks = taskMap.get(activeDate).tasks;
+
     const ul = createDateWithTasksEl(taskMap.get(activeDate));
+
+    const liParent = ul.querySelector("li") as HTMLElement;
+    liParent.classList = "timeGrid";
+
+    const gridElements = createDayTimes();
+
+    const liElements = liParent.querySelectorAll("li");
+
+    tasks.forEach((t, index) => {
+      const hour = t.dueTime.split(":")[0];
+      console.log(gridElements[index]);
+
+      gridElements[index].append(liElements[index]);
+    });
+
+    liParent.append(...gridElements);
 
     calendarDays.append(ul);
   } else {
@@ -50,12 +68,9 @@ export const updateDay = (calendarDays: HTMLDivElement, title: HTMLElement) => {
 };
 
 const createDayTimes = () => {
-  // next step: each Task in Date > tasks should have a due-date time. If none is selected, take 1 hour in the future.
-  // This will be used to add them to the grid-layout.
-
   const hoursADay = 24;
 
-  const grid = [];
+  const timeDivs = [];
 
   for (let i = 0; i < hoursADay; i++) {
     const hourContainer = document.createElement("div") as HTMLDivElement;
@@ -65,13 +80,13 @@ const createDayTimes = () => {
         <h3 classname="hourText"></h3>
         `;
 
-    grid.push(hourContainer);
+    timeDivs.push(hourContainer);
 
     const text = hourContainer.querySelector("h3") as HTMLElement;
     text.textContent = String(i);
   }
 
-  return grid;
+  return timeDivs;
 };
 
 const day = () => {
@@ -91,9 +106,6 @@ const day = () => {
   const calendarDays = calendarContainer.querySelector(
     "#calendarGridContainer"
   ) as HTMLDivElement;
-  calendarDays.classList = "timeGrid";
-  const gridElements = createDayTimes();
-  calendarDays.append(...gridElements);
 
   const pageController = calendarContainer.querySelector(
     "#pageController"

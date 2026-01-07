@@ -5,7 +5,6 @@
 
 .draggedGhost {
   background-color: blue;
-  width: 200px;
 }
 
 #app {
@@ -21,15 +20,15 @@
 
 /* for when 'Today' is active - displays a grid of hourly times */
 .timeGrid {
-  height: 100vh;
   width: 30%;
-  background-color: orange;
+
   display: grid;
+  gap: clamp(10px, 5vw, 50px);
 }
 
 .hourContainer {
-  background-color: green;
   border-bottom: 1px solid black;
+  width: fit-content;
 }
 
 .weekDays {
