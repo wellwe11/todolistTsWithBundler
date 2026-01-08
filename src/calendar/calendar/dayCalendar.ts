@@ -2,6 +2,8 @@ import { currentDate, updateCalendar } from "../mainCalendar";
 import { tasks, type Task } from "../../localStorageArray/localStorageArray";
 
 import createDateWithTasksEl from "./functions/createDateWithTasksEl";
+import { createDate, createTask, liElement } from "../../listItem/listItem";
+import handleMoveLiActions from "../../localStorageArray/functions/handleMoveLiActions";
 
 const dayNames = [
   "Monday",
@@ -32,78 +34,71 @@ export const updateDay = (calendarDays: HTMLDivElement, title: HTMLElement) => {
   calendarDays.innerHTML = "";
   calendarDays.classList = "";
 
+  calendarDays.className += " " + "timeGrid";
+
   const weekDay = dayNames[currentDate.currentDay.weekDay];
   const date = currentDate.currentDay.date;
 
   title.textContent = `${weekDay}, ${date} ${currentDate.month}`;
   const activeDate = `${date}/${currentDate.monthIndex}/${currentDate.year}`;
 
+  // find current day (user scrolls between days and this maps out each day based on date)
   const taskMap = new Map();
   tasks.forEach((t) => taskMap.set(t.date, t));
+  if (!taskMap.has(activeDate)) return;
 
-  if (taskMap.has(activeDate)) {
-    const activeDateMapped = taskMap.get(activeDate);
+  const activeDay = taskMap.get(activeDate);
 
-    const tasks = activeDateMapped.tasks.sort(
-      (a, b) => +a.dueTime.replace(":", "") - +b.dueTime.replace(":", "")
-    );
+  const ul = document.createElement("ul") as HTMLUListElement;
+  ul.addEventListener("click", handleMoveLiActions);
+  const list = document.createElement("li") as HTMLLIElement;
+  list.className = "timesList";
 
-    // create list with times for same day
-    const ul = createDateWithTasksEl(taskMap.get(activeDate));
+  calendarDays.append(ul);
+  ul.append(list);
+  ul.id = activeDay.id;
+  ul.className = "dateLi";
 
-    // ul's grid-container
-    const liParent = ul.querySelector("li") as HTMLElement;
-    liParent.classList = "timeGrid";
+  // sort tasks by time and push times together
+  const timeMap = new Map<string, Task[]>();
 
-    const liElements = liParent.querySelectorAll("li");
+  activeDay.tasks.forEach((t: Task) => {
+    if (!t) return;
 
-    const timeMap = new Map<string, Task[]>();
-    tasks.forEach((t: Task) => {
-      const existing = timeMap.get(t.dueTime) || [];
+    const existingTime = timeMap.get(t.dueTime) || [];
+    existingTime.push(t);
 
-      existing.push(t);
+    timeMap.set(t.dueTime, existingTime);
+  });
 
-      timeMap.set(t.dueTime, existing);
+  // need to sort by time as well
+
+  [...timeMap].forEach(([time, objArr], arrIndex) => {
+    const container = document.createElement("div");
+    container.classList = `timeContainer`;
+
+    const timeText = document.createElement("h3");
+
+    timeText.textContent = time;
+    timeText.style.gridRow = String(arrIndex + 1);
+    timeText.style.gridColumn = "1";
+
+    container.append(timeText);
+
+    objArr.forEach((obj, index) => {
+      const li = createTask(obj);
+      li.dataset.list = String(arrIndex);
+      li.style.gridRow = String(index + 1);
+      li.style.gridColumn = "1";
+      container.append(li);
+
+      if (obj.list && obj.list.length > 0) {
+        obj.list.forEach((l) => {});
+      }
     });
 
-    [...timeMap].forEach(([time, tasks]) => {
-      const timeContainer = createTimeElement(time);
-      const tasksContainer = document.createElement("ul");
-      tasksContainer.className = "dateLi";
-      tasksContainer.id = activeDateMapped.id;
-
-      timeContainer.append(tasksContainer);
-
-      tasks.forEach((task) => {
-        const findEl = [...liElements].find(
-          (e) => e.id === task.id
-        ) as HTMLElement;
-
-        tasksContainer.append(findEl);
-      });
-
-      ul.append(timeContainer);
-    });
-
-    calendarDays.append(ul);
-  } else {
-    calendarDays.innerHTML = "";
-  }
-};
-
-const createTimeElement = (time: string) => {
-  const hourContainer = document.createElement("div") as HTMLDivElement;
-  hourContainer.className = "hourContainer";
-  hourContainer.dataset.name = `time ${time}`;
-  hourContainer.id = "hourContainer";
-  hourContainer.innerHTML = `
-          <h3 classname="hourText"></h3>
-          `;
-
-  const text = hourContainer.querySelector("h3") as HTMLElement;
-  text.textContent = String(time);
-
-  return hourContainer;
+    list.append(container);
+  });
 };
 
 const day = () => {

@@ -45,14 +45,18 @@ export const handleDrag = (element: HTMLElement): void => {
   element.addEventListener("dragend", (e) => {
     e.stopPropagation();
     element.classList.remove("dragging");
-    const parent = element.closest(".dateLi");
 
-    if (!parent) return;
+    const parent = element.closest(".dateLi") as HTMLElement;
+
+    const parentId = parent.id;
+
+    if (!parentId) return;
 
     const newIndex = Number(findIndexOfEl(element));
+
     if (newIndex === undefined || newIndex === oldIndex || !element) return;
 
-    syncNewOrder(newIndex, oldIndex, element.id, parent.id);
+    syncNewOrder(newIndex, oldIndex, element.id, parentId);
   });
 };
 
@@ -63,11 +67,16 @@ const placeElAfter = (element: HTMLElement, event: DragEvent) => {
 };
 
 const findIndexOfEl = (el: HTMLElement) => {
-  const parent = el.parentNode;
+  // const parent = el.parentNode;
+  const parent = el.closest(".dateLi") as HTMLElement;
+
   if (!parent) return;
 
-  const listArray = Array.from(parent.querySelectorAll(":scope > li"));
-  const index = listArray.indexOf(el);
+  const listArray = Array.from(parent.querySelectorAll(`li`));
+
+  const index = listArray.indexOf(el) - 1;
+
+  console.log(listArray);
 
   return index;
 };

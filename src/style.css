@@ -23,6 +23,7 @@
   width: 30%;
 
   display: grid;
+  justify-items: center;
 }
 
 .hourContainer {

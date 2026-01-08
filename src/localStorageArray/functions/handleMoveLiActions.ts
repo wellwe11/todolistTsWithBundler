@@ -11,9 +11,9 @@ const handleMoveLiActions = (event: MouseEvent) => {
 
   const element = target.closest("li") as HTMLLIElement;
 
-  const parent = element.closest(".dateLi");
+  const parent = target.closest(".dateLi");
 
-  const parentId = parent!.id as string;
+  const parentId = parent!.id;
 
   const id = element.id;
 

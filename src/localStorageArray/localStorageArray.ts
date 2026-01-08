@@ -48,8 +48,6 @@ export class Dates {
 
 export let tasks: Dates[] = loadTasks();
 
-console.log(tasks);
-
 // here & main.ts - tasks
 export const notifyChange = (): void => {
   sortByDate();
@@ -218,6 +216,7 @@ export const syncNewOrder = (
   if (!dateList) return;
 
   let taskList = findTaskArray(dateList.tasks, id);
+
   if (!taskList || taskList.length < 1) return;
 
   const item = taskList.splice(oldIndex, 1)[0];
