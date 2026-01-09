@@ -1,10 +1,16 @@
-const setToIndex = (direction: string, index: number, arrayLength: number) => {
+const setToIndex = (
+  direction: string,
+  index: number,
+  startIndex: number,
+  arrayLength: number
+) => {
   let toIndex: number;
+
   if (direction === "up") {
-    if (index === 0) return null;
+    if (index === startIndex) return null;
     toIndex = index - 1;
   } else {
-    if (index === arrayLength) return null;
+    if (index === arrayLength - 1) return null;
     toIndex = index + 1;
   }
 

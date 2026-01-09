@@ -170,7 +170,9 @@ export const filterTask = (id: string, parentId: string): void => {
 export const handleMoveIndex = (
   id: string,
   parentId: string,
-  direction: string
+  direction: string,
+  arrLength: number,
+  dayArrStartIndex: number
 ): void => {
   // find tasks own array
   let localArray = [...tasks];
@@ -186,7 +188,7 @@ export const handleMoveIndex = (
   const index = taskList.findIndex((l) => l.id === id);
 
   // define new index where object will be placed at
-  const toIndex = setToIndex(direction, index, taskList.length);
+  const toIndex = setToIndex(direction, index, dayArrStartIndex, arrLength);
 
   if (toIndex === null) return;
 

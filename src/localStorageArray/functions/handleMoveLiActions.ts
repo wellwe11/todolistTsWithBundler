@@ -15,16 +15,28 @@ const handleMoveLiActions = (event: MouseEvent) => {
 
   const parentId = parent!.id;
 
+  const containerList = target.closest(".timeContainer") as HTMLElement;
+  const arrayList = Array.from(containerList.querySelectorAll("li"));
+  const arrayListLength = arrayList.length;
+
+  console.log(parent);
+
+  const allParents = Array.from(parent?.querySelectorAll("[data-list]"));
+
+  const firstElementInList = arrayList[0];
+  const indexOfFirstEl = allParents.indexOf(firstElementInList);
+  console.log(indexOfFirstEl);
+
   const id = element.id;
 
   switch (action) {
     case "up":
-      handleMoveIndex(id, parentId, "up");
+      handleMoveIndex(id, parentId, "up", arrayListLength, indexOfFirstEl);
 
       break;
 
     case "down":
-      handleMoveIndex(id, parentId, "down");
+      handleMoveIndex(id, parentId, "down", arrayListLength, indexOfFirstEl);
 
       break;
 

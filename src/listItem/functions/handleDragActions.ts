@@ -71,25 +71,18 @@ const findIndexOfEl = (el: HTMLLIElement) => {
     const parent = el.parentNode;
     const listArray = Array.from(parent!.querySelectorAll(`li`));
 
-    console.log(listArray);
-
     const index = listArray.indexOf(el);
 
     return index;
   }
 
   const parent = el.closest(".timesList") as HTMLElement;
-  console.log(parent);
 
   if (!parent) return;
 
   const listArray = Array.from(parent.querySelectorAll(`[data-list]`));
 
-  console.log(listArray);
-
   const index = listArray.indexOf(el);
-
-  console.log(index);
 
   return index;
 };
