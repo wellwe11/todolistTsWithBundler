@@ -3,7 +3,7 @@ import { syncNewOrder } from "../../localStorageArray/localStorageArray";
 window.addEventListener("dragover", (e) => e.preventDefault());
 window.addEventListener("drop", (e) => e.preventDefault());
 
-export const handleDrag = (element: HTMLElement): void => {
+export const handleDrag = (element: HTMLLIElement): void => {
   let oldIndex: number;
 
   element.addEventListener("dragstart", (e) => {
@@ -66,7 +66,7 @@ const placeElAfter = (element: HTMLElement, event: DragEvent) => {
   return offset > 10;
 };
 
-const findIndexOfEl = (el: HTMLElement) => {
+const findIndexOfEl = (el: HTMLLIElement) => {
   // const parent = el.parentNode;
   const parent = el.closest(".dateLi") as HTMLElement;
 
@@ -76,7 +76,7 @@ const findIndexOfEl = (el: HTMLElement) => {
 
   const index = listArray.indexOf(el) - 1;
 
-  console.log(listArray);
+  console.log(index);
 
   return index;
 };

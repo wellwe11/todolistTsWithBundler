@@ -30,39 +30,12 @@ const dayActions = (
   }
 };
 
-export const updateDay = (calendarDays: HTMLDivElement, title: HTMLElement) => {
-  calendarDays.innerHTML = "";
-  calendarDays.classList = "";
-
-  calendarDays.className += " " + "timeGrid";
-
-  const weekDay = dayNames[currentDate.currentDay.weekDay];
-  const date = currentDate.currentDay.date;
-
-  title.textContent = `${weekDay}, ${date} ${currentDate.month}`;
-  const activeDate = `${date}/${currentDate.monthIndex}/${currentDate.year}`;
-
-  // find current day (user scrolls between days and this maps out each day based on date)
-  const taskMap = new Map();
-  tasks.forEach((t) => taskMap.set(t.date, t));
-  if (!taskMap.has(activeDate)) return;
-
-  const activeDay = taskMap.get(activeDate);
-
-  const ul = document.createElement("ul") as HTMLUListElement;
-  ul.addEventListener("click", handleMoveLiActions);
-  const list = document.createElement("li") as HTMLLIElement;
-  list.className = "timesList";
-
-  calendarDays.append(ul);
-  ul.append(list);
-  ul.id = activeDay.id;
-  ul.className = "dateLi";
-
+// splits tasks based on time, and sorts them by time: 0 > 24
+const tasksByTime = (map) => {
   // sort tasks by time and push times together
   const timeMap = new Map<string, Task[]>();
 
-  activeDay.tasks.forEach((t: Task) => {
+  map.tasks.forEach((t: Task) => {
     if (!t) return;
 
     const existingTime = timeMap.get(t.dueTime) || [];
@@ -71,7 +44,49 @@ export const updateDay = (calendarDays: HTMLDivElement, title: HTMLElement) => {
     timeMap.set(t.dueTime, existingTime);
   });
 
-  // need to sort by time as well
+  const compareTimes = (a, b) => {
+    const aVal = +a[0].replace(":", "");
+    const bVal = +b[0].replace(":", "");
+
+    return aVal - bVal;
+  };
+
+  return [...timeMap].sort(compareTimes);
+};
+
+export const updateDay = (calendarDays: HTMLDivElement, title: HTMLElement) => {
+  calendarDays.innerHTML = "";
+  calendarDays.classList = "";
+
+  calendarDays.className += " " + "timeGrid";
+
+  // find specific day-date
+  const weekDay = dayNames[currentDate.currentDay.weekDay];
+  const date = currentDate.currentDay.date;
+
+  title.textContent = `${weekDay}, ${date} ${currentDate.month}`;
+  const activeDate = `${date}/${currentDate.monthIndex}/${currentDate.year}`;
+
+  // Create a map for each day - this returns an object: {date => obj}
+  const taskMap = new Map();
+  tasks.forEach((t) => taskMap.set(t.date, t));
+  if (!taskMap.has(activeDate)) return;
+  const activeDay = taskMap.get(activeDate); // find date which is based on activeDate
+
+  // ul will handle the click-events
+  const ul = document.createElement("ul") as HTMLUListElement;
+  ul.addEventListener("click", handleMoveLiActions);
+  ul.id = activeDay.id;
+  ul.className = "dateLi";
+
+  // time-appender
+  const list = document.createElement("li") as HTMLLIElement;
+  list.className = "timesList";
+  ul.append(list);
+
+  calendarDays.append(ul);
+
+  const timeMap = tasksByTime(activeDay);
 
   [...timeMap].forEach(([time, objArr], arrIndex) => {
     const container = document.createElement("div");
