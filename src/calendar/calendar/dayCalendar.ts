@@ -49,7 +49,7 @@ export const updateDay = (calendarDays: HTMLDivElement, title: HTMLElement) => {
   tasks.forEach((t) => taskMap.set(t.date, t));
   if (!taskMap.has(activeDate)) return;
 
-  const ul = createDayTasks(taskMap, activeDate);
+  const ul = createDayTasks(taskMap, activeDate) as HTMLUListElement;
 
   calendarDays.append(ul);
 };

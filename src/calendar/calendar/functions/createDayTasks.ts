@@ -1,6 +1,6 @@
 import { createTask, liElement } from "../../../listItem/listItem";
 import handleMoveLiActions from "../../../localStorageArray/functions/handleMoveLiActions";
-import type { Task } from "../../../localStorageArray/localStorageArray";
+import type { Task, Dates } from "../../../localStorageArray/localStorageArray";
 
 // splits tasks based on time, and sorts them by time: 0 > 24
 const tasksByTime = (map) => {
@@ -29,8 +29,9 @@ const tasksByTime = (map) => {
   return [...timeMap];
 };
 
-const createDayTasks = (taskMap, activeDate) => {
+const createDayTasks = (taskMap: Map<string, Dates>, activeDate: string) => {
   const activeDay = taskMap.get(activeDate); // find date which is based on activeDate
+  if (!activeDay) return;
 
   // ul will handle the click-events
   const ul = document.createElement("ul") as HTMLUListElement;

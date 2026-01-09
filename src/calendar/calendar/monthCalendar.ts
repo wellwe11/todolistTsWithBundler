@@ -1,6 +1,7 @@
 import { tasks } from "../../localStorageArray/localStorageArray";
 import { currentDate } from "../mainCalendar";
 import createDateWithTasksEl from "./functions/createDateWithTasksEl";
+import createDayTasks from "./functions/createDayTasks";
 
 // static never-changing weekdays: monday, tuesday, wednesday etc.
 const dayNames = [
@@ -83,9 +84,9 @@ export const updateCalendarMonth = (
   tasks.forEach((t) => taskMap.set(t.date, t));
 
   mDays.forEach((dataElement) => {
-    const dateStr = dataElement.dataset.action;
+    const dateStr: string = dataElement.dataset.action!;
     if (taskMap.has(dateStr)) {
-      const ul = createDateWithTasksEl(taskMap.get(dateStr));
+      const ul = createDayTasks(taskMap, dateStr) as HTMLUListElement;
       dataElement.append(ul);
     }
   });
