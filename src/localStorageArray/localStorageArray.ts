@@ -74,6 +74,10 @@ function sync(date: Dates) {
   }
 }
 
+const sortByTime = () => {
+  // will sort each individual task inside of dates by time as well
+};
+
 const sortByDate = () => {
   return tasks.sort((a, b) => {
     const aSplittedDate = Number(
