@@ -51,7 +51,9 @@ const tasksByTime = (map) => {
     return aVal - bVal;
   };
 
-  return [...timeMap].sort(compareTimes);
+  // cannot sort yet, because it messes with the handleDragActions (since it's based on their element-index)
+  //   return [...timeMap].sort(compareTimes);
+  return [...timeMap];
 };
 
 export const updateDay = (calendarDays: HTMLDivElement, title: HTMLElement) => {
@@ -102,13 +104,19 @@ export const updateDay = (calendarDays: HTMLDivElement, title: HTMLElement) => {
 
     objArr.forEach((obj, index) => {
       const li = createTask(obj);
+      li.dataset.type = "parent";
       li.dataset.list = String(arrIndex);
       li.style.gridRow = String(index + 1);
       li.style.gridColumn = "1";
+
       container.append(li);
 
       if (obj.list && obj.list.length > 0) {
-        obj.list.forEach((l) => {});
+        obj.list.forEach((l) => {
+          const child = liElement(l);
+          child.dataset.type = "child";
+          li.append(child);
+        });
       }
     });
 

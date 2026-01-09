@@ -104,7 +104,6 @@ function loadTasks(): Dates[] {
 // main.ts - // main-tasks
 export const handleAddToArray = (e: Event): void => {
   const { name, date, time } = handleInput(e);
-  console.log(time);
 
   if (!name) {
     throw new Error("-- handleNewLi -- no input");
@@ -128,7 +127,6 @@ export const handleAddToArray = (e: Event): void => {
     dueDate: `${day}/${month}/${year}`,
     dueTime: !time ? newTime : time,
   };
-  console.log(liItem);
 
   const foundDate = tasks.find((t) => t.date === `${day}/${month}/${year}`);
 

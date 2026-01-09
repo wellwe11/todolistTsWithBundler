@@ -67,14 +67,27 @@ const placeElAfter = (element: HTMLElement, event: DragEvent) => {
 };
 
 const findIndexOfEl = (el: HTMLLIElement) => {
-  // const parent = el.parentNode;
-  const parent = el.closest(".dateLi") as HTMLElement;
+  if (el.dataset.type === "child") {
+    const parent = el.parentNode;
+    const listArray = Array.from(parent!.querySelectorAll(`li`));
+
+    console.log(listArray);
+
+    const index = listArray.indexOf(el);
+
+    return index;
+  }
+
+  const parent = el.closest(".timesList") as HTMLElement;
+  console.log(parent);
 
   if (!parent) return;
 
-  const listArray = Array.from(parent.querySelectorAll(`li`));
+  const listArray = Array.from(parent.querySelectorAll(`[data-list]`));
 
-  const index = listArray.indexOf(el) - 1;
+  console.log(listArray);
+
+  const index = listArray.indexOf(el);
 
   console.log(index);
 
